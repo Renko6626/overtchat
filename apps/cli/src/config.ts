@@ -1,5 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
-import { mkdir, readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { atomicWrite } from "./atomic-file.js";
 import { protectWindowsDirectory } from "./windows.js";
@@ -349,6 +349,24 @@ export async function writeInstallationConfig(
     )}\n`,
     0o600,
   );
+}
+
+/** Leaves an existing file alone: its contents are the operator's. */
+export async function ensureAppEnvironmentFile(
+  paths: RuntimePaths,
+  template: string,
+): Promise<void> {
+  await mkdir(paths.configDirectory, { recursive: true, mode: 0o700 });
+  await protectWindowsDirectory(paths.configDirectory);
+  try {
+    await writeFile(paths.appEnvironmentFile, template, {
+      encoding: "utf8",
+      mode: 0o600,
+      flag: "wx",
+    });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error;
+  }
 }
 
 export async function writeSecretsFile(

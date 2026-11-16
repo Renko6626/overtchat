@@ -23,6 +23,11 @@ and operator choices into a managed Compose stack and optional Host Connector.
 - `src/release.ts` validates the published manifest and handles CLI
   self-updates; `src/connector.ts` installs and verifies the managed connector.
 
+`app.env` in the configuration directory belongs to the operator: create it
+when it is missing and never rewrite it. The app service reads it through
+`env_file`, below the managed `environment`, so it cannot replace a value
+setup owns.
+
 Preserve optional-service selections across updates. Realtime voice is a
 separately versioned optional image selected by the release manifest; setup and
 update must not couple its version to the app or expose its container port.

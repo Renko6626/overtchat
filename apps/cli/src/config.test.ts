@@ -1,9 +1,10 @@
-import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   defaultInstallationConfig,
+  ensureAppEnvironmentFile,
   initialSecrets,
   readInstallationConfig,
   readInstallationSecrets,
@@ -66,6 +67,7 @@ function pathsFor(directory: string): RuntimePaths {
     configDirectory: directory,
     stateFile: path.join(directory, "installation.json"),
     secretsFile: path.join(directory, "stack.env"),
+    appEnvironmentFile: path.join(directory, "app.env"),
     stackDirectory: path.join(directory, "stack"),
     composeFile: path.join(directory, "stack", "compose.yml"),
     searxngDirectory: path.join(directory, "stack", "searxng"),
@@ -154,6 +156,28 @@ describe("existing installation adoption", () => {
     expect(
       defaultInstallationConfig(existing(), manifest).disableUpdateCheck,
     ).toBe(true);
+  });
+});
+
+describe("the operator's app settings file", () => {
+  it("is created once and never rewritten", async () => {
+    const directory = await mkdtemp(path.join(os.tmpdir(), "overtchat-app-env-"));
+    try {
+      const paths = pathsFor(path.join(directory, "config"));
+      await ensureAppEnvironmentFile(paths, "# template\n");
+      expect(await readFile(paths.appEnvironmentFile, "utf8")).toBe("# template\n");
+      if (process.platform !== "win32") {
+        expect((await stat(paths.appEnvironmentFile)).mode & 0o777).toBe(0o600);
+      }
+
+      await writeFile(paths.appEnvironmentFile, "OIDC_CLIENT_ID=overtchat\n");
+      await ensureAppEnvironmentFile(paths, "# a newer template\n");
+      expect(await readFile(paths.appEnvironmentFile, "utf8")).toBe(
+        "OIDC_CLIENT_ID=overtchat\n",
+      );
+    } finally {
+      await rm(directory, { recursive: true, force: true });
+    }
   });
 });
 

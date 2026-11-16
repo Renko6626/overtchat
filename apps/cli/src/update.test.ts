@@ -80,6 +80,7 @@ const paths: RuntimePaths = {
   configDirectory: "/home/test/.config/overtchat",
   stateFile: "/home/test/.config/overtchat/config.json",
   secretsFile: "/home/test/.config/overtchat/secrets.env",
+  appEnvironmentFile: "/home/test/.config/overtchat/app.env",
   stackDirectory: "/home/test/.local/share/overtchat",
   composeFile: "/home/test/.local/share/overtchat/compose.yml",
   searxngDirectory: "/home/test/.local/share/overtchat/searxng",

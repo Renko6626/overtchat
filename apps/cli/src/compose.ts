@@ -111,6 +111,7 @@ export function renderStackEnvironment(
     ["COMPOSE_PROFILES", profileList(config).join(",")],
     ["OVERTCHAT_DATA_SOURCE", config.dataVolume],
     ["SEARXNG_CONFIG_DIR", paths.searxngDirectory],
+    ["OVERTCHAT_APP_ENV_FILE", paths.appEnvironmentFile],
     [
       "OVERTCHAT_INSTALLED_CAPABILITIES",
       [
@@ -190,6 +191,11 @@ services:
     restart: unless-stopped
     ports:
       - "\${APP_BIND_ADDRESS}:\${APP_PORT}:4717"
+    # The operator's own settings. Values under environment take precedence,
+    # so this file cannot change what setup manages.
+    env_file:
+      - path: \${OVERTCHAT_APP_ENV_FILE}
+        required: false
     environment:
       BETTER_AUTH_SECRET: \${BETTER_AUTH_SECRET}
       BETTER_AUTH_URL: \${BETTER_AUTH_URL}
@@ -480,6 +486,22 @@ https://{$OVERTCHAT_CLOUD_HOSTNAME} {
 	}
 	reverse_proxy app:4717
 }
+`;
+
+/** What a new installation's app.env starts as: comments only. */
+export const APP_ENVIRONMENT_TEMPLATE = `# Your own settings for the OvertChat app container, one NAME=value per line.
+# The manager creates this file once and never changes it. Settings chosen in
+# "overtchat setup" cannot be changed here. Run "overtchat restart" after a
+# change. Put single quotes around a value that contains $.
+#
+# Sign in with an identity provider (OpenID Connect):
+# https://github.com/yoloyash/overtchat/blob/main/docs/deploy.md#sign-in-with-an-identity-provider
+# OIDC_ISSUER_URL=https://id.example.com
+# OIDC_CLIENT_ID=overtchat
+# OIDC_CLIENT_SECRET=
+# OIDC_PROVIDER_NAME=Example ID
+# OIDC_AUTO_CREATE_USERS=false
+# OIDC_DISABLE_PASSWORD_LOGIN=false
 `;
 
 export const SEARXNG_SETTINGS = `use_default_settings: true

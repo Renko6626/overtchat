@@ -1633,6 +1633,12 @@ to the internet. Before a sandbox version is published, tag a locally built imag
 as `ghcr.io/yoloyash/overtchat-sandbox:<version>` (or `overtchat-sandbox-full`) and
 run setup in development mode, which ignores pull failures.
 
+The generated stack gives the app container the operator's `app.env` from the
+configuration directory, which setup and update create once and never rewrite.
+After changing how it is rendered, check with `docker compose config` on a
+generated stack that the file is optional, that its values reach the app, and
+that a value under `environment` still wins over the same name in the file.
+
 Installer binary and terminal checks are documented in [Release process](release.md).
 
 ## Agent transport validation

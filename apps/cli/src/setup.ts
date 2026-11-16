@@ -5,6 +5,7 @@ import path from "node:path";
 import { confirm, isCancel, note, outro } from "@clack/prompts";
 import {
   defaultInstallationConfig,
+  ensureAppEnvironmentFile,
   initialSecrets,
   normalizeInstallationConfig,
   readInstallationConfig,
@@ -16,6 +17,7 @@ import { assertAgentConnectionsComplete, completeAgentConnections, prepareAgentC
 import { installationSpinner as spinner } from "./install-progress.js";
 import { protectInstallationSecrets } from "./install-log.js";
 import {
+  APP_ENVIRONMENT_TEMPLATE,
   CLOUD_PROXY_CONFIG,
   CLOUD_TUNNEL_CONFIG,
   renderComposeFile,
@@ -184,6 +186,7 @@ export async function prepareFiles(
       });
     }
   }
+  await ensureAppEnvironmentFile(paths, APP_ENVIRONMENT_TEMPLATE);
   await writeFile(paths.composeFile, renderComposeFile(config), {
     encoding: "utf8",
     mode: 0o600,

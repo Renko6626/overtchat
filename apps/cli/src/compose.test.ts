@@ -11,6 +11,7 @@ const paths: RuntimePaths = {
   configDirectory: "/home/test/.config/overtchat",
   stateFile: "/home/test/.config/overtchat/installation.json",
   secretsFile: "/home/test/.config/overtchat/stack.env",
+  appEnvironmentFile: "/home/test/.config/overtchat/app.env",
   stackDirectory: "/home/test/.local/share/overtchat",
   composeFile: "/home/test/.local/share/overtchat/compose.yml",
   searxngDirectory: "/home/test/.local/share/overtchat/searxng",
@@ -155,6 +156,23 @@ describe("managed Compose configuration", () => {
     const compose = renderComposeFile(selected);
     expect(compose).toContain('"${APP_BIND_ADDRESS}:${APP_PORT}:4717"');
     expect(compose).toContain('EXTRA_TRUSTED_ORIGINS: ${EXTRA_TRUSTED_ORIGINS:-}');
+  });
+
+  it("gives the app the operator's own settings file, below the managed ones", () => {
+    const environment = renderStackEnvironment(config(), {
+      betterAuthSecret: "auth", managementSecret: "management", searxngSecret: "search", voiceSharedSecret: "voice", sandboxToken: "sandbox", cloudCredential: "",
+    }, paths);
+    expect(environment).toContain(
+      'OVERTCHAT_APP_ENV_FILE="/home/test/.config/overtchat/app.env"',
+    );
+    const compose = renderComposeFile(config());
+    const app = compose.slice(compose.indexOf("  app:"), compose.indexOf("\n  redis:"));
+    // A missing file must not stop the stack, and Compose lets `environment`
+    // win over `env_file`, so the file cannot replace a managed value.
+    expect(app).toContain(
+      "    env_file:\n      - path: ${OVERTCHAT_APP_ENV_FILE}\n        required: false\n    environment:\n",
+    );
+    expect(compose.match(/env_file:/gu)).toHaveLength(1);
   });
 
   it("starts installed local services independently from the active provider", () => {

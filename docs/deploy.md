@@ -450,13 +450,15 @@ configuration leaves it off and says why in the app's logs.
    `https://chat.example.com/api/auth/callback/oidc`, and the `openid`,
    `profile`, and `email` scopes. `BETTER_AUTH_URL` must be the address people
    open; the app derives the redirect address from it.
-2. Set the variables below and recreate the app container. The login screen
-   then shows **Continue with** and the provider's name.
+2. Set the variables below in the app's environment and recreate the app
+   container. A managed installation keeps them in
+   [`app.env`](#your-own-app-settings); run `overtchat restart` afterwards.
+   The login screen then shows **Continue with** and the provider's name.
 
 | Variable | Meaning |
 | --- | --- |
 | `OIDC_ISSUER_URL` | The provider's issuer, for example `https://id.example.com` or `https://id.example.com/realms/home`. The app reads `/.well-known/openid-configuration` below it, so the address must be reachable from the app container as well as from browsers. |
-| `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` | The client you created. Keep the secret in `.env`; quote it with single quotes if it contains `$`. |
+| `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET` | The client you created. Keep the secret in `.env` or `app.env`; quote it with single quotes if it contains `$`. |
 | `OIDC_PROVIDER_NAME` | What the button calls the provider. Defaults to `SSO`. |
 | `OIDC_AUTO_CREATE_USERS` | `true` creates an account, with the user role, the first time someone signs in. Off by default: only people who already have an account can sign in. |
 | `OIDC_DISABLE_PASSWORD_LOGIN` | `true` turns password sign-in off for everyone. Ignored unless the provider is configured. |
@@ -483,8 +485,8 @@ have a password, and to nobody once passwords are off.
 refuses password sign-ins and the apps show only the provider button. Password
 and two-factor settings, and the administrator's password resets, are hidden.
 New users are added by email address only. If the provider is unreachable, set
-the variable back to `false`, recreate the app container, and sign in with a
-password. That needs an administrator who has one: the account created during
+the variable back to `false`, recreate the app container (`overtchat restart`),
+and sign in with a password. That needs an administrator who has one: the account created during
 setup does, accounts created by a first sign-in do not, and
 [password recovery](#password-recovery) only replaces a password an account
 already has. Keep the setup administrator, or another administrator with a
@@ -1299,6 +1301,29 @@ status. Every command supports `--help`.
   `start` and `restart` wait until the app is ready. The Host Connector and
   native Apple speech are host services and keep running; the connector
   reconnects once the app is back.
+
+### Your own app settings
+
+A managed installation reads extra environment for the app container from
+`app.env` in its configuration directory: `~/.config/overtchat/app.env`, or
+`%LOCALAPPDATA%\OvertChat\config\app.env` on Windows. Setup and update create
+it with commented examples and never change it afterwards. Use it for settings
+this guide describes as part of the app's environment and that setup does not
+ask about, such as
+[sign-in with an identity provider](#sign-in-with-an-identity-provider):
+
+```sh
+OIDC_ISSUER_URL=https://id.example.com
+OIDC_CLIENT_ID=overtchat
+OIDC_CLIENT_SECRET='keep-this-private'
+```
+
+Write one `NAME=value` per line, with single quotes around a value that
+contains `$`, then run `overtchat restart`. Settings that setup manages, such
+as the address and port, cannot be changed here; rerun `overtchat setup` for
+those. The file can hold secrets, so it is readable only by the user who
+manages the installation. Include it in backups of the configuration
+directory.
 
 ## Logs and backup
 

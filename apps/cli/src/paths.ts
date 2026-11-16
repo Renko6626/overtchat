@@ -18,6 +18,7 @@ export function runtimePaths(environment = process.env): RuntimePaths {
     configDirectory,
     stateFile: path.join(configDirectory, "installation.json"),
     secretsFile: path.join(configDirectory, "stack.env"),
+    appEnvironmentFile: path.join(configDirectory, "app.env"),
     stackDirectory,
     composeFile: path.join(stackDirectory, "compose.yml"),
     searxngDirectory,

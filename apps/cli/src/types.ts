@@ -153,6 +153,8 @@ export type RuntimePaths = {
   configDirectory: string;
   stateFile: string;
   secretsFile: string;
+  /** The operator's own settings for the app container; never rewritten. */
+  appEnvironmentFile: string;
   stackDirectory: string;
   composeFile: string;
   searxngDirectory: string;

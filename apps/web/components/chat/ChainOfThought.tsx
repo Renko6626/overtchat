@@ -307,16 +307,16 @@ function McpStep({ part }: { part: DynamicToolUIPart }) {
           {server} · {title}
         </span>
         <span className="shrink-0 text-muted-foreground">
-          {running ? "Running" : part.state === "output-error" ? "Failed" : "Done"}
+          {running ? "执行中" : part.state === "output-error" ? "失败" : "已完成"}
         </span>
       </div>
       {part.state === "output-error" ? (
         <p className="text-destructive">{part.errorText}</p>
       ) : (
-        <ToolValue label="Input" value={part.input} />
+        <ToolValue label="输入" value={part.input} />
       )}
       {part.state === "output-available" && (
-        <ToolValue label="Output" value={part.output} />
+        <ToolValue label="输出" value={part.output} />
       )}
     </div>
   );
@@ -377,15 +377,15 @@ function SearchStep({ part }: { part: WebSearchPart }) {
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between gap-3">
         <span className="min-w-0 truncate font-medium text-foreground">
-          {query || "Searching…"}
+          {query || "搜索中…"}
         </span>
         {part.state === "output-available" && (
           <span className="shrink-0 text-muted-foreground">
             {results.length > 0
-              ? `${results.length} ${results.length === 1 ? "result" : "results"}`
+              ? `${results.length} 条结果`
               : hasAnswer
-                ? "answer"
-                : "no results"}
+                ? "含答案"
+                : "无结果"}
             {provider ? ` · ${provider}` : ""}
           </span>
         )}
@@ -434,7 +434,7 @@ function FetchStep({ part }: { part: FetchUrlPart }) {
     return (
       <div className="space-y-1.5">
         <div className="font-medium text-foreground">
-          Read {domain || "page"}
+          读取 {domain || "页面"}
         </div>
         <p className="text-destructive">{part.errorText}</p>
       </div>
@@ -464,7 +464,7 @@ function FetchStep({ part }: { part: FetchUrlPart }) {
             {cleanDomain(page.url)}
           </span>
         </span>
-        <span className="shrink-0 text-muted-foreground">Image</span>
+        <span className="shrink-0 text-muted-foreground">图像</span>
       </a>
     );
   }
@@ -482,11 +482,11 @@ function FetchStep({ part }: { part: FetchUrlPart }) {
         <Favicon domain={domain} className="size-4 shrink-0 rounded-sm" />
       )}
       <span className="min-w-0 flex-1 truncate text-foreground">
-        {page?.title ?? (running ? "Reading…" : domain)}
+        {page?.title ?? (running ? "读取中…" : domain)}
       </span>
       {page && (
         <span className="shrink-0 text-muted-foreground">
-          {page.wordCount.toLocaleString()} words
+          {page.wordCount.toLocaleString("zh-CN")} 词
         </span>
       )}
     </a>
@@ -495,7 +495,7 @@ function FetchStep({ part }: { part: FetchUrlPart }) {
 
 function ReadFileStep({ part }: { part: ReadFilePart }) {
   const output = part.output;
-  const name = output?.file ?? part.input?.file ?? "file";
+  const name = output?.file ?? part.input?.file ?? "文件";
   return (
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between gap-3">
@@ -504,10 +504,10 @@ function ReadFileStep({ part }: { part: ReadFilePart }) {
         </span>
         <span className="shrink-0 text-muted-foreground">
           {part.state === "output-error"
-            ? "Failed"
+            ? "失败"
             : output
               ? readFileRangeLabel(output)
-              : "Reading…"}
+              : "读取中…"}
         </span>
       </div>
       {part.state === "output-error" && (
@@ -524,13 +524,13 @@ function SearchFilesStep({ part }: { part: SearchFilesPart }) {
     <div className="space-y-1.5">
       <div className="flex items-baseline justify-between gap-3">
         <span className="min-w-0 truncate font-medium text-foreground">
-          {query || "Searching files…"}
+          {query || "搜索文件…"}
         </span>
         {output && (
           <span className="shrink-0 text-muted-foreground">
             {output.totalMatches === 0
-              ? "no matches"
-              : `${output.totalMatches.toLocaleString()} ${output.totalMatches === 1 ? "match" : "matches"}`}
+              ? "无匹配"
+              : `${output.totalMatches.toLocaleString("zh-CN")} 处匹配`}
           </span>
         )}
       </div>
@@ -580,10 +580,10 @@ function CodeStep({ part }: { part: CodeExecutionPart }) {
         <p className="text-destructive">{part.errorText}</p>
       )}
       {output?.stdout && (
-        <RunOutput label="Output" text={output.stdout} truncated={output.stdoutTruncated} />
+        <RunOutput label="输出" text={output.stdout} truncated={output.stdoutTruncated} />
       )}
       {output?.stderr && (
-        <RunOutput label="Errors" text={output.stderr} truncated={output.stderrTruncated} />
+        <RunOutput label="错误" text={output.stderr} truncated={output.stderrTruncated} />
       )}
       {files.length > 0 && <CodeRunFiles files={files} />}
     </div>
@@ -603,7 +603,7 @@ function RunOutput({
     <div className="rounded-lg border bg-background/40 px-2.5 py-2">
       <p className="mb-1 text-[10px] font-medium tracking-wide text-muted-foreground uppercase">
         {label}
-        {truncated ? " (truncated)" : ""}
+        {truncated ? "（已截断）" : ""}
       </p>
       <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words font-mono text-[11px] leading-4 text-foreground">
         {text}
@@ -660,69 +660,69 @@ function Favicon({
 }
 
 function activeLabel(last: ActivityPart | undefined): string {
-  if (!last) return "Working…";
+  if (!last) return "处理中…";
   if (last.type === "tool-web_search") {
     const query = last.input?.query?.trim();
-    return query ? `Searching "${query}"` : "Searching the web…";
+    return query ? `正在搜索“${query}”` : "正在搜索网络…";
   }
   if (last.type === "tool-fetch_url") {
     const url = last.input?.url;
-    return url ? `Reading ${cleanDomain(url)}` : "Reading page…";
+    return url ? `正在读取 ${cleanDomain(url)}` : "正在读取页面…";
   }
   if (isReadFilePart(last)) {
     const file = last.input?.file;
-    return file ? `Reading ${file}` : "Reading file…";
+    return file ? `正在读取 ${file}` : "正在读取文件…";
   }
   if (isSearchFilesPart(last)) {
     const query = last.input?.query?.trim();
-    return query ? `Searching files for "${query}"` : "Searching files…";
+    return query ? `正在文件中搜索“${query}”` : "正在搜索文件…";
   }
-  if (isCodeExecutionPart(last)) return "Running code…";
+  if (isCodeExecutionPart(last)) return "正在运行代码…";
   if (isGmailToolPart(last)) return gmailActivityLabel(last, true);
   if (isCalendarToolPart(last)) return calendarActivityLabel(last, true);
   if (isViewSkillToolPart(last)) return viewSkillActivityLabel(last, true);
   if (isMcpTool(last)) {
     const parsed = parseMcpToolName(last.toolName);
     return parsed
-      ? `Running ${parsed.serverName} · ${parsed.toolName}`
-      : "Running MCP tool…";
+      ? `正在运行 ${parsed.serverName} · ${parsed.toolName}`
+      : "正在运行 MCP 工具…";
   }
-  return "Thinking";
+  return "思考中";
 }
 
 function settledLabel(parts: ActivityPart[], duration: number): string {
   const lastTool = [...parts].reverse().find(isTool);
   if (lastTool?.type === "tool-web_search") {
-    if (lastTool.state === "output-error") return "Web search failed";
-    if (lastTool.state === "output-available") return "Searched the web";
-    return "Web search did not complete";
+    if (lastTool.state === "output-error") return "网络搜索失败";
+    if (lastTool.state === "output-available") return "已搜索网络";
+    return "网络搜索未完成";
   }
   if (lastTool?.type === "tool-fetch_url") {
-    if (lastTool.state === "output-error") return "Page fetch failed";
+    if (lastTool.state === "output-error") return "页面获取失败";
     if (lastTool.state === "output-available") {
-      return isFetchedImage(lastTool.output) ? "Viewed image" : "Read page";
+      return isFetchedImage(lastTool.output) ? "已查看图像" : "已读取页面";
     }
-    return "Page fetch did not complete";
+    return "页面获取未完成";
   }
   if (lastTool && isReadFilePart(lastTool)) {
-    if (lastTool.state === "output-error") return "File read failed";
+    if (lastTool.state === "output-error") return "文件读取失败";
     if (lastTool.state === "output-available") {
-      return `Read ${lastTool.output?.file ?? lastTool.input?.file ?? "file"}`;
+      return `已读取 ${lastTool.output?.file ?? lastTool.input?.file ?? "文件"}`;
     }
-    return "File read did not complete";
+    return "文件读取未完成";
   }
   if (lastTool && isSearchFilesPart(lastTool)) {
-    if (lastTool.state === "output-error") return "File search failed";
-    if (lastTool.state === "output-available") return "Searched files";
-    return "File search did not complete";
+    if (lastTool.state === "output-error") return "文件搜索失败";
+    if (lastTool.state === "output-available") return "已搜索文件";
+    return "文件搜索未完成";
   }
   if (lastTool && isCodeExecutionPart(lastTool)) {
-    if (lastTool.state === "output-error") return "Code run failed";
-    if (lastTool.state !== "output-available") return "Code run did not complete";
-    const label = lastTool.output?.exitCode === 0 ? "Ran code" : "Code ended with an error";
+    if (lastTool.state === "output-error") return "代码运行失败";
+    if (lastTool.state !== "output-available") return "代码运行未完成";
+    const label = lastTool.output?.exitCode === 0 ? "已运行代码" : "代码运行出错";
     // Run files show inside the steps, so the summary says they are there.
     const files = parts.filter(isCodeExecutionPart).flatMap(codeExecutionFiles).length;
-    return files ? `${label} · ${files} ${files === 1 ? "file" : "files"}` : label;
+    return files ? `${label} · ${files} 个文件` : label;
   }
   if (lastTool && isGmailToolPart(lastTool)) {
     return gmailActivityLabel(lastTool, false);
@@ -737,10 +737,10 @@ function settledLabel(parts: ActivityPart[], duration: number): string {
     const parsed = parseMcpToolName(lastTool.toolName);
     const label = parsed
       ? `${parsed.serverName} · ${parsed.toolName}`
-      : "MCP tool";
-    if (lastTool.state === "output-error") return `${label} failed`;
-    if (lastTool.state === "output-available") return `Used ${label}`;
-    return `${label} did not complete`;
+      : "MCP 工具";
+    if (lastTool.state === "output-error") return `${label} 失败`;
+    if (lastTool.state === "output-available") return `已使用 ${label}`;
+    return `${label} 未完成`;
   }
-  return duration > 0 ? `Thought for ${duration}s` : "Thoughts";
+  return duration > 0 ? `思考了 ${duration} 秒` : "思考过程";
 }

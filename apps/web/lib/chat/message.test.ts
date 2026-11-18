@@ -13,7 +13,7 @@ describe("chatErrorMessage", () => {
   });
 
   it("keeps the generic copy for transport failures and empty messages", () => {
-    const fallback = "Couldn't complete the response. Please try again.";
+    const fallback = "未能完成回复，请重试。";
     expect(chatErrorMessage(new TypeError("Failed to fetch"))).toBe(fallback);
     expect(chatErrorMessage(new Error("   "))).toBe(fallback);
   });

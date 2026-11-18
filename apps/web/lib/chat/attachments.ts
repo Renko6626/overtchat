@@ -73,8 +73,8 @@ export function isSupportedDocument(file: File): boolean {
 }
 
 export function unsupportedAttachmentMessage(file: File): string {
-  const label = file.name || file.type || "This file";
-  return `${label} is not a supported attachment type.`;
+  const label = file.name || file.type || "此文件";
+  return `${label} 不是支持的附件类型。`;
 }
 
 export function hasDataTransferFiles(data: DataTransfer): boolean {
@@ -111,17 +111,17 @@ export function formatSize(bytes: number): string {
 }
 
 export function humanMediaLabel(mediaType: string | undefined): string {
-  if (!mediaType) return "File";
+  if (!mediaType) return "文件";
   if (mediaType === "application/pdf") return "PDF";
-  if (mediaType.includes("wordprocessingml")) return "Word document";
-  if (mediaType.includes("spreadsheetml")) return "Excel spreadsheet";
-  if (mediaType.includes("presentationml")) return "PowerPoint presentation";
+  if (mediaType.includes("wordprocessingml")) return "Word 文档";
+  if (mediaType.includes("spreadsheetml")) return "Excel 表格";
+  if (mediaType.includes("presentationml")) return "PowerPoint 演示文稿";
   if (mediaType === "text/csv") return "CSV";
   if (mediaType === "application/json") return "JSON";
-  if (mediaType === "application/zip") return "ZIP archive";
-  if (mediaType === "application/octet-stream") return "File";
+  if (mediaType === "application/zip") return "ZIP 压缩包";
+  if (mediaType === "application/octet-stream") return "文件";
   if (mediaType.startsWith("image/")) {
-    return `${mediaType.slice(6).replace(/\+xml$/, "").toUpperCase()} image`;
+    return `${mediaType.slice(6).replace(/\+xml$/, "").toUpperCase()} 图像`;
   }
   if (mediaType.startsWith("text/")) return mediaType.replace(/^text\/(x-)?/, "").toUpperCase();
   return mediaType;

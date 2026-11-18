@@ -51,7 +51,7 @@ export function DictateButton({
       }}
       disabled={transcribing || (disabled && !recording)}
       aria-label={
-        recording ? "Stop dictation" : transcribing ? "Transcribing" : "Dictate"
+        recording ? "停止语音输入" : transcribing ? "转写中" : "语音输入"
       }
       aria-pressed={recording}
     >
@@ -102,7 +102,7 @@ export function DictateError({
               size="sm"
               onClick={onRecordAgain}
             >
-              Record again
+              重新录制
             </Button>
           )}
           {isAdmin && error.kind === "stt_unavailable" && (
@@ -110,7 +110,7 @@ export function DictateError({
               to="/settings/services"
               className="text-xs underline underline-offset-4"
             >
-              Speech settings
+              语音设置
             </Link>
           )}
         </>

@@ -22,11 +22,11 @@ export function MessageQueue({
   if (!messages.length && !error) return null;
   return (
     <section
-      aria-label="Queued messages"
+      aria-label="排队中的消息"
       className="mb-2 max-h-64 overflow-y-auto rounded-2xl border bg-muted/30 p-2"
     >
       <p className="px-2 pb-1 text-xs text-muted-foreground" role="status">
-        {paused ? "Queue paused — use Send now to continue" : "Queued messages"}
+        {paused ? "队列已暂停，点“立即发送”继续" : "排队中的消息"}
       </p>
       {error && (
         <p role="alert" className="px-2 pb-2 text-xs text-destructive">
@@ -52,15 +52,15 @@ export function MessageQueue({
                     key={index}
                     className="truncate text-xs text-muted-foreground"
                   >
-                    {file.filename || "Attachment"}
+                    {file.filename || "附件"}
                   </p>
                 ))}
               </div>
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Send now"
-                title="Stop the response and send now"
+                aria-label="立即发送"
+                title="停止回复并立即发送"
                 disabled={sendingId !== null}
                 onClick={() => void queue.sendNow(message.id)}
               >
@@ -73,8 +73,8 @@ export function MessageQueue({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Edit queued message"
-                title="Edit queued message"
+                aria-label="编辑排队消息"
+                title="编辑排队消息"
                 disabled={sendingId === message.id}
                 onClick={() => queue.edit(message.id)}
               >
@@ -83,8 +83,8 @@ export function MessageQueue({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Delete queued message"
-                title="Delete queued message"
+                aria-label="删除排队消息"
+                title="删除排队消息"
                 disabled={sendingId === message.id}
                 onClick={() => queue.remove(message.id)}
               >
@@ -109,7 +109,7 @@ function QueueEditor({
   return (
     <div className="space-y-2">
       <Textarea
-        aria-label="Edit queued message text"
+        aria-label="编辑排队消息内容"
         autoFocus
         value={text}
         onChange={(event) => setText(event.target.value)}
@@ -127,7 +127,7 @@ function QueueEditor({
       />
       {message.files.map((file, index) => (
         <p key={index} className="truncate text-xs text-muted-foreground">
-          {file.filename || "Attachment"}
+          {file.filename || "附件"}
         </p>
       ))}
       <div className="flex gap-2">
@@ -136,10 +136,10 @@ function QueueEditor({
           disabled={!text.trim() && !message.files.length}
           onClick={() => queue.save(message.id, text)}
         >
-          Save queued message
+          保存排队消息
         </Button>
         <Button size="sm" variant="ghost" onClick={() => queue.edit(null)}>
-          Cancel edit
+          取消编辑
         </Button>
       </div>
     </div>

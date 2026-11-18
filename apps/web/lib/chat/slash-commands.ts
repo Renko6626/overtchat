@@ -38,8 +38,8 @@ export interface SlashCommand {
 export type SlashCommandGroup = "actions" | "navigate";
 
 export const SLASH_COMMAND_GROUP_LABELS: Record<SlashCommandGroup, string> = {
-  actions: "Actions",
-  navigate: "Navigate",
+  actions: "操作",
+  navigate: "导航",
 };
 
 export const SLASH_COMMAND_GROUP_ORDER: readonly SlashCommandGroup[] = [

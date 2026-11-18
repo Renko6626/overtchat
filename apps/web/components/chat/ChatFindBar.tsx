@@ -43,16 +43,16 @@ export function ChatFindBar({
   const position = activeIndex >= 0 ? String(activeIndex + 1) : "?";
   let status = "";
   if (hasQuery) {
-    if (counting) status = total ? `${position}/…` : "Searching…";
-    else if (total === 0) status = "No results";
+    if (counting) status = total ? `${position}/…` : "搜索中…";
+    else if (total === 0) status = "无结果";
     else status = `${position}/${total}`;
   }
-  const noResults = status === "No results";
+  const noResults = status === "无结果";
 
   return (
     <div
       role="search"
-      aria-label="Find in chat"
+      aria-label="在对话中查找"
       aria-busy={pending || counting}
       className="absolute top-2 right-3 z-20 flex w-[min(24rem,calc(100%-1.5rem))] items-center gap-1 rounded-lg border bg-popover/95 py-1 pr-1 pl-2.5 text-popover-foreground shadow-md backdrop-blur"
     >
@@ -75,8 +75,8 @@ export function ChatFindBar({
           if (event.shiftKey) onPrevious();
           else onNext();
         }}
-        placeholder="Find in chat"
-        aria-label="Find in chat"
+        placeholder="在对话中查找"
+        aria-label="在对话中查找"
         spellCheck={false}
         autoComplete="off"
         className="h-7 min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
@@ -91,7 +91,7 @@ export function ChatFindBar({
         {pending && hasQuery ? (
           <LoaderCircle
             className={cn("size-3.5", motionClasses.spinner)}
-            aria-label="Searching"
+            aria-label="搜索中"
           />
         ) : (
           status
@@ -102,18 +102,18 @@ export function ChatFindBar({
           type="button"
           variant="ghost"
           size="xs"
-          title="Earlier messages could not be loaded, so they are not searched."
+          title="较早的消息无法加载，未纳入搜索。"
           onClick={onRetryHistory}
         >
-          Retry
+          重试
         </Button>
       )}
       <Button
         type="button"
         variant="ghost"
         size="icon-sm"
-        aria-label="Previous match"
-        title="Previous match (Shift+Enter)"
+        aria-label="上一处"
+        title="上一处（Shift+Enter）"
         disabled={total === 0}
         onClick={onPrevious}
       >
@@ -123,8 +123,8 @@ export function ChatFindBar({
         type="button"
         variant="ghost"
         size="icon-sm"
-        aria-label="Next match"
-        title="Next match (Enter)"
+        aria-label="下一处"
+        title="下一处（Enter）"
         disabled={total === 0}
         onClick={onNext}
       >
@@ -134,8 +134,8 @@ export function ChatFindBar({
         type="button"
         variant="ghost"
         size="icon-sm"
-        aria-label="Close find"
-        title="Close (Esc)"
+        aria-label="关闭查找"
+        title="关闭（Esc）"
         onClick={onClose}
       >
         <X />

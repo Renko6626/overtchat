@@ -318,10 +318,10 @@ function recipientLine(
 
 /** What a card says about where its email is. */
 export const GMAIL_EMAIL_STATUS_LABELS: Record<GmailEmailDisplay["status"], string> = {
-  unsent: "Not sent",
-  replaced: "Replaced by a newer version",
-  draft: "Draft in Gmail, not sent",
-  sent: "Sent",
+  unsent: "未发送",
+  replaced: "已被新版本替换",
+  draft: "Gmail 中的草稿，未发送",
+  sent: "已发送",
 };
 
 /** What an email's card shows. */
@@ -340,7 +340,7 @@ export function describeGmailEmail(
       id: part.toolCallId,
       status: "sent",
       source: "model",
-      subject: text(output?.subject) ?? "(no subject)",
+      subject: text(output?.subject) ?? "（无主题）",
       recipients: recipientLine(to, input),
       body: typeof input?.body === "string" ? input.body.trim() : "",
       href:
@@ -363,7 +363,7 @@ export function describeGmailEmail(
           ? "replaced"
           : "unsent",
     source: composed ? "composed" : "draft",
-    subject: text(output?.subject) ?? "(no subject)",
+    subject: text(output?.subject) ?? "（无主题）",
     recipients: recipientLine(to, input),
     body: body.trim(),
     content:
@@ -480,8 +480,7 @@ export function gmailSenderName(from: string): string {
 }
 
 function count(total: number, noun: string, more = false): string {
-  if (total === 0) return `No ${noun}s`;
-  return `${total}${more ? "+" : ""} ${noun}${total === 1 && !more ? "" : "s"}`;
+  return `${total}${more ? "+" : ""} ${noun}`;
 }
 
 function names(value: unknown): string[] {
@@ -494,22 +493,22 @@ function names(value: unknown): string[] {
 function sortingChanges(added: string[], removed: string[]): string[] {
   const changes: string[] = [];
   const system: Record<string, [added: string, removed: string]> = {
-    INBOX: ["moved to inbox", "archived"],
-    UNREAD: ["marked unread", "marked read"],
-    STARRED: ["starred", "unstarred"],
-    IMPORTANT: ["marked important", "marked not important"],
-    TRASH: ["moved to trash", "restored from trash"],
-    SPAM: ["marked as spam", "marked not spam"],
+    INBOX: ["移至收件箱", "已归档"],
+    UNREAD: ["标为未读", "标为已读"],
+    STARRED: ["已加星标", "已取消星标"],
+    IMPORTANT: ["标为重要", "标为不重要"],
+    TRASH: ["移至回收站", "从回收站恢复"],
+    SPAM: ["标为垃圾邮件", "标为非垃圾邮件"],
   };
   for (const [label, [whenAdded, whenRemoved]] of Object.entries(system)) {
     if (removed.includes(label)) changes.push(whenRemoved);
     if (added.includes(label)) changes.push(whenAdded);
   }
   for (const label of added) {
-    if (!(label in system)) changes.push(`labeled ${label}`);
+    if (!(label in system)) changes.push(`添加标签 ${label}`);
   }
   for (const label of removed) {
-    if (!(label in system)) changes.push(`unlabeled ${label}`);
+    if (!(label in system)) changes.push(`移除标签 ${label}`);
   }
   return changes;
 }
@@ -561,7 +560,7 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
   const input = record(part.input);
   const output = status === "done" ? record(part.output) : undefined;
   const error =
-    status === "error" ? (text(part.errorText) ?? "Gmail request failed") : undefined;
+    status === "error" ? (text(part.errorText) ?? "Gmail 请求失败") : undefined;
 
   const account = text(output?.account);
 
@@ -570,14 +569,14 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
     return {
       action,
       status,
-      title: status === "running" ? "Searching Gmail" : "Searched Gmail",
+      title: status === "running" ? "正在搜索 Gmail" : "已搜索 Gmail",
       detail: text(input?.query),
       note: output
-        ? count(messages.length, "result", output.hasMore === true)
+        ? count(messages.length, "条结果", output.hasMore === true)
         : undefined,
       rows: messages.map((message) => ({
         sender: gmailSenderName(text(message.from) ?? ""),
-        subject: text(message.subject) ?? "(no subject)",
+        subject: text(message.subject) ?? "（无主题）",
         date: text(message.date),
         unread: message.unread === true,
         href: gmailThreadUrl(account, text(message.threadId)),
@@ -592,9 +591,9 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
     return {
       action,
       status,
-      title: status === "running" ? "Reading email" : "Read email",
+      title: status === "running" ? "正在读取邮件" : "已读取邮件",
       detail: text(output?.subject),
-      note: output ? count(messages.length, "message") : undefined,
+      note: output ? count(messages.length, "封邮件") : undefined,
       rows: messages.map((message) => {
         const attachments = list(message.attachments).flatMap(
           (attachment) => text(attachment.filename) ?? [],
@@ -616,13 +615,13 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
     return {
       action,
       status,
-      title: status === "running" ? "Reading attachment" : "Read attachment",
+      title: status === "running" ? "正在读取附件" : "已读取附件",
       detail: text(output?.filename),
       note: output
         ? offset > 0
-          ? "Continued"
+          ? "续读"
           : pages > 0
-            ? count(pages, "page")
+            ? count(pages, "页")
             : undefined
         : undefined,
       rows: [],
@@ -634,8 +633,8 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
     return {
       action,
       status,
-      title: status === "running" ? "Listing Gmail labels" : "Listed Gmail labels",
-      note: output ? count(list(output.labels).length, "label") : undefined,
+      title: status === "running" ? "正在列出 Gmail 标签" : "已列出 Gmail 标签",
+      note: output ? count(list(output.labels).length, "个标签") : undefined,
       rows: [],
       error,
     };
@@ -644,15 +643,15 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
   if (action === "sort") {
     const changes = sortingChanges(names(output?.added), names(output?.removed));
     const threads = typeof output?.threads === "number" ? output.threads : 0;
-    const conversations = count(threads, "conversation");
+    const conversations = count(threads, "个会话");
     const summary = changes.join(", ");
     return {
       action,
       status,
       title:
         status !== "done"
-          ? "Sorting mail"
-          : `${conversations} ${changes.length === 1 ? changes[0] : "updated"}`,
+          ? "正在整理邮件"
+          : `${conversations} ${changes.length === 1 ? changes[0] : "已更新"}`,
       note:
         changes.length > 1
           ? `${summary[0].toUpperCase()}${summary.slice(1)}`
@@ -669,15 +668,15 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
     title:
       action === "send"
         ? status === "running"
-          ? "Sending email"
-          : "Sent email"
+          ? "正在发送邮件"
+          : "已发送邮件"
         : action === "compose"
           ? status === "running"
-            ? "Writing email"
-            : "Wrote email"
+            ? "正在撰写邮件"
+            : "已撰写邮件"
           : status === "running"
-            ? "Writing draft"
-            : "Saved draft in Gmail",
+            ? "正在撰写草稿"
+            : "草稿已保存到 Gmail",
     detail: text(output?.subject) ?? text(input?.subject),
     rows: [],
     error,
@@ -685,14 +684,14 @@ export function describeGmailToolPart(part: GmailToolPart): GmailToolDisplay {
 }
 
 const ACTIVE_LABELS: Record<GmailToolDisplay["action"], string> = {
-  search: "Searching Gmail…",
-  read: "Reading email…",
-  attachment: "Reading attachment…",
-  labels: "Listing Gmail labels…",
-  sort: "Sorting mail…",
-  compose: "Writing email…",
-  send: "Sending email…",
-  draft: "Writing draft…",
+  search: "正在搜索 Gmail…",
+  read: "正在读取邮件…",
+  attachment: "正在读取附件…",
+  labels: "正在列出 Gmail 标签…",
+  sort: "正在整理邮件…",
+  compose: "正在撰写邮件…",
+  send: "正在发送邮件…",
+  draft: "正在撰写草稿…",
 };
 
 /** The activity timeline's one-line summary while or after a Gmail step runs. */
@@ -700,10 +699,10 @@ export function gmailActivityLabel(part: GmailToolPart, active: boolean): string
   const display = describeGmailToolPart(part);
   if (active) {
     return display.action === "search" && display.detail
-      ? `Searching Gmail for "${display.detail}"`
+      ? `正在搜索 Gmail："${display.detail}"`
       : ACTIVE_LABELS[display.action];
   }
-  if (display.status === "error") return "Gmail request failed";
-  if (display.status === "running") return "Gmail request did not complete";
+  if (display.status === "error") return "Gmail 请求失败";
+  if (display.status === "running") return "Gmail 请求未完成";
   return display.title;
 }

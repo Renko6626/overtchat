@@ -92,11 +92,11 @@ export function DocumentPanel({
   const Icon = DOCUMENT_ICONS[document.type];
   const status = view.draft
     ? writing
-      ? "Writing…"
-      : "Not saved"
+      ? "写入中…"
+      : "未保存"
     : view.updating && streaming
-      ? `Version ${saved.version} · Updating…`
-      : `Version ${saved.version} of ${view.versions.at(-1)!.version}`;
+      ? `版本 ${saved.version} · 更新中…`
+      : `版本 ${saved.version}/${view.versions.at(-1)!.version}`;
 
   function save(blob: Blob, filename: string) {
     const url = URL.createObjectURL(blob);
@@ -132,8 +132,8 @@ export function DocumentPanel({
       save(await response.blob(), documentFilename(shown, "docx"));
     } catch {
       toast.error({
-        title: "Could not export the document",
-        description: "Check your connection and try again.",
+        title: "无法导出文档",
+        description: "请检查网络连接后重试。",
       });
     } finally {
       setExporting(false);
@@ -142,7 +142,7 @@ export function DocumentPanel({
 
   return (
     <SidePanel
-      aria-label={`Document: ${document.title}`}
+      aria-label={`文档：${document.title}`}
       data-document-panel=""
       variant={variant}
       onClose={onClose}
@@ -170,12 +170,12 @@ export function DocumentPanel({
         </div>
         <div className="order-last flex w-full items-center gap-0.5 @md/panel:order-none @md/panel:w-auto">
           {view.versions.length > 1 && !view.draft && (
-            <div className="flex items-center" role="group" aria-label="Versions">
+            <div className="flex items-center" role="group" aria-label="版本">
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Previous version"
-                title="Previous version"
+                aria-label="上一版本"
+                title="上一版本"
                 disabled={view.index <= 0}
                 onClick={() => onSelect(view.versions[view.index - 1].toolCallId)}
               >
@@ -184,8 +184,8 @@ export function DocumentPanel({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Next version"
-                title="Next version"
+                aria-label="下一版本"
+                title="下一版本"
                 disabled={view.index >= view.versions.length - 1}
                 onClick={() => onSelect(view.versions[view.index + 1].toolCallId)}
               >
@@ -198,8 +198,8 @@ export function DocumentPanel({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label={showSource ? "Show preview" : "Show source"}
-                title={showSource ? "Show preview" : "Show source"}
+                aria-label={showSource ? "显示预览" : "显示源码"}
+                title={showSource ? "显示预览" : "显示源码"}
                 aria-pressed={showSource}
                 disabled={writing}
                 onClick={() => setShowSource((value) => !value)}
@@ -210,13 +210,13 @@ export function DocumentPanel({
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Copy document"
-              title="Copy document"
+              aria-label="复制文档"
+              title="复制文档"
               disabled={writing}
               onClick={() => {
                 void writeText(document.content)
-                  .then(() => toast.success("Document copied"))
-                  .catch(() => toast.error("Could not copy the document"));
+                  .then(() => toast.success("文档已复制"))
+                  .catch(() => toast.error("无法复制文档"));
               }}
             >
               <Copy />
@@ -228,8 +228,8 @@ export function DocumentPanel({
                     <Button
                       variant="ghost"
                       size="icon-sm"
-                      aria-label="Download document"
-                      title="Download"
+                      aria-label="下载文档"
+                      title="下载"
                       disabled={writing || exporting}
                     />
                   }
@@ -270,8 +270,8 @@ export function DocumentPanel({
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label="Download document"
-                title={`Download ${documentFilename(document)}`}
+                aria-label="下载文档"
+                title={`下载 ${documentFilename(document)}`}
                 disabled={writing}
                 onClick={download}
               >
@@ -287,8 +287,8 @@ export function DocumentPanel({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Close document"
-          title="Close document"
+          aria-label="关闭文档"
+          title="关闭文档"
           onClick={onClose}
         >
           <X />
@@ -345,7 +345,7 @@ function DocumentBody({
     case "html":
       return (
         <iframe
-          title={`${document.title} preview`}
+          title={`${document.title} 预览`}
           sandbox="allow-scripts"
           referrerPolicy="no-referrer"
           srcDoc={htmlPreviewDocument(document.content)}
@@ -391,7 +391,7 @@ function useImage(svg: string | null) {
       .then(() => {
         if (cancelled) return;
         if (!image.naturalWidth || !image.naturalHeight) {
-          throw new Error("This image has no usable dimensions.");
+          throw new Error("此图像没有可用的尺寸。");
         }
         setState({
           source: svg,
@@ -402,7 +402,7 @@ function useImage(svg: string | null) {
         if (!cancelled) {
           setState({
             source: svg,
-            error: reason instanceof Error ? reason.message : "Unable to render this image.",
+            error: reason instanceof Error ? reason.message : "无法渲染此图像。",
           });
         }
       });
@@ -421,7 +421,7 @@ function PreviewStatus({ error }: { error?: string }) {
     </p>
   ) : (
     <div className="flex items-center gap-2 p-4 text-sm text-muted-foreground" role="status">
-      <Loader2 className={cn("size-4", motionClasses.spinner)} /> Rendering…
+      <Loader2 className={cn("size-4", motionClasses.spinner)} /> 渲染中…
     </div>
   );
 }
@@ -432,7 +432,7 @@ function SvgPreview({ source }: { source: string }) {
       return { svg: svgPreviewSource(source) };
     } catch (error) {
       return {
-        error: error instanceof Error ? error.message : "Unable to render this SVG.",
+        error: error instanceof Error ? error.message : "无法渲染此 SVG。",
       };
     }
   }, [source]);
@@ -441,7 +441,7 @@ function SvgPreview({ source }: { source: string }) {
   if (!loaded?.image) return <PreviewStatus error={loaded?.error} />;
   return (
     <div className="flex size-full min-h-[24rem] flex-col">
-      <DiagramViewport image={loaded.image} alt="SVG preview" fullscreen />
+      <DiagramViewport image={loaded.image} alt="SVG 预览" fullscreen />
     </div>
   );
 }
@@ -463,7 +463,7 @@ function MermaidPreview({ source }: { source: string }) {
         if (!cancelled) {
           setRendered({
             key,
-            error: reason instanceof Error ? reason.message : "Unable to render this diagram.",
+            error: reason instanceof Error ? reason.message : "无法渲染此图表。",
           });
         }
       });
@@ -477,7 +477,7 @@ function MermaidPreview({ source }: { source: string }) {
   if (!loaded?.image) return <PreviewStatus error={loaded?.error} />;
   return (
     <div className="flex size-full min-h-[24rem] flex-col">
-      <DiagramViewport image={loaded.image} alt="Diagram preview" fullscreen />
+      <DiagramViewport image={loaded.image} alt="图表预览" fullscreen />
     </div>
   );
 }

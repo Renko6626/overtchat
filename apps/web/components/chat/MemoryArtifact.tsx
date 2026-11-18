@@ -71,7 +71,7 @@ export function MemoryArtifact({ parts }: { parts: MemoryToolPart[] }) {
           size="xs"
           className="text-muted-foreground"
         >
-          Manage
+          管理
         </Button>
       </div>
 
@@ -103,7 +103,7 @@ function MemoryDetail({ detail }: { detail: MemoryToolDisplay }) {
     <div className="space-y-1.5 py-3">
       <div className="flex items-center justify-between gap-3">
         <code className="min-w-0 truncate text-[11px] text-muted-foreground">
-          {detail.key ?? "Memory"}
+          {detail.key ?? "记忆"}
         </code>
         <span
           className={cn(

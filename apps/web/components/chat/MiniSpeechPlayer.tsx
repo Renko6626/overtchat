@@ -41,7 +41,7 @@ export function MiniSpeechPlayer({
             <>
               {canRetry && (
                 <Button variant="outline" size="sm" onClick={retry}>
-                  <RotateCcw /> Retry playback
+                  <RotateCcw /> 重试播放
                 </Button>
               )}
               {isAdmin && (
@@ -49,7 +49,7 @@ export function MiniSpeechPlayer({
                   to="/settings/services"
                   className="text-xs underline underline-offset-4"
                 >
-                  Speech settings
+                  语音设置
                 </Link>
               )}
             </>
@@ -72,7 +72,7 @@ export function MiniSpeechPlayer({
                 aria-live="polite"
                 className="flex-1 px-2 text-xs text-muted-foreground"
               >
-                {loading ? "Loading…" : "Streaming…"}
+                {loading ? "加载中…" : "正在播放…"}
               </span>
             )}
             <AudioPlayerTimeDisplay showDuration={canSeek} />
@@ -81,7 +81,7 @@ export function MiniSpeechPlayer({
         <button
           type="button"
           onClick={() => stop()}
-          aria-label="Close player"
+          aria-label="关闭播放器"
           className="rounded-md p-2 text-muted-foreground motion-colors hover:bg-accent hover:text-foreground"
         >
           <X className="size-4" />

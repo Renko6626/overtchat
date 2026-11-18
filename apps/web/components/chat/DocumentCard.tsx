@@ -54,7 +54,7 @@ export function DocumentCard({
     output?.title ??
     part.input?.title?.trim() ??
     (creating ? undefined : part.input?.id?.trim()) ??
-    "Untitled document";
+    "未命名文档";
 
   if (part.state === "output-error") {
     return (
@@ -64,7 +64,7 @@ export function DocumentCard({
       >
         <CircleAlert className="mt-0.5 size-4 shrink-0" />
         <span>
-          {creating ? "Could not create" : "Could not update"} {title}
+          {creating ? "无法创建" : "无法更新"} {title}
           {part.errorText ? (
             <span className="block text-xs">{firstLine(part.errorText)}</span>
           ) : null}
@@ -77,12 +77,12 @@ export function DocumentCard({
   const status = pending
     ? live
       ? creating
-        ? "Writing…"
-        : "Updating…"
+        ? "写入中…"
+        : "更新中…"
       : creating
-        ? "Stopped before it was saved"
-        : "Update stopped"
-    : `${DOCUMENT_TYPE_LABELS[type]} · ${creating ? "Created" : "Updated"} · Version ${output?.version ?? 1}`;
+        ? "保存前已停止"
+        : "更新已停止"
+    : `${DOCUMENT_TYPE_LABELS[type]} · ${creating ? "已创建" : "已更新"} · 版本 ${output?.version ?? 1}`;
   const openable = Boolean(panel && (output || (live && creating)));
   const active = panel?.activeToolCallId === part.toolCallId;
   const Icon = DOCUMENT_ICONS[type];

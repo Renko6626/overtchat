@@ -212,9 +212,9 @@ describe("display", () => {
     expect(display).toMatchObject({
       action: "events",
       status: "done",
-      title: "Checked calendar",
+      title: "已查看日历",
       detail: "lunch",
-      note: "3+ events",
+      note: "3+ 个日程",
       rows: [
         {
           title: "Lunch",
@@ -225,7 +225,7 @@ describe("display", () => {
           gone: false,
           href: "https://www.google.com/calendar/event?eid=abc&authuser=ada%40example.test",
         },
-        { title: "(no title)", allDay: true, guests: 0, gone: true },
+        { title: "（无标题）", allDay: true, guests: 0, gone: true },
         { title: "Phish", gone: false },
       ],
     });
@@ -233,8 +233,8 @@ describe("display", () => {
     expect(display.rows[1].href).toBeUndefined();
     expect(display.rows[2].href).toBeUndefined();
     expect(JSON.stringify(display)).not.toContain("private words");
-    expect(calendarActivityLabel(listed, true)).toBe("Checking calendar…");
-    expect(calendarActivityLabel(listed, false)).toBe("Checked calendar");
+    expect(calendarActivityLabel(listed, true)).toBe("正在查看日历…");
+    expect(calendarActivityLabel(listed, false)).toBe("已查看日历");
   });
 
   it("shows the event that was added, changed or deleted", () => {
@@ -244,19 +244,19 @@ describe("display", () => {
       describeCalendarToolPart(part({ type: "tool-calendar_create_event", output })),
     ).toMatchObject({
       action: "create",
-      title: "Added event to calendar",
+      title: "已添加日程到日历",
       rows: [{ title: "Lunch", gone: false }],
     });
     expect(
       describeCalendarToolPart(part({ type: "tool-calendar_update_event", output })),
-    ).toMatchObject({ action: "update", title: "Changed event" });
+    ).toMatchObject({ action: "update", title: "已修改日程" });
 
     const deleted = describeCalendarToolPart(
       part({ type: "tool-calendar_delete_event", output }),
     );
     expect(deleted).toMatchObject({
       action: "delete",
-      title: "Deleted event",
+      title: "已删除日程",
       rows: [{ title: "Lunch", gone: true }],
     });
     expect(deleted.rows[0].href).toBeUndefined();
@@ -270,11 +270,11 @@ describe("display", () => {
     });
     expect(describeCalendarToolPart(running)).toMatchObject({
       status: "running",
-      title: "Adding event",
+      title: "正在添加日程",
       rows: [],
     });
     expect(calendarActivityLabel(running, false)).toBe(
-      "Google Calendar request did not complete",
+      "Google Calendar 请求未完成",
     );
 
     const failed = part({ state: "output-error", errorText: "No such calendar." });
@@ -283,7 +283,7 @@ describe("display", () => {
       error: "No such calendar.",
     });
     expect(calendarActivityLabel(failed, false)).toBe(
-      "Google Calendar request failed",
+      "Google Calendar 请求失败",
     );
 
     expect(
@@ -293,7 +293,7 @@ describe("display", () => {
           output: { calendars: [{ id: "a" }, { id: "b" }] },
         }),
       ),
-    ).toMatchObject({ title: "Listed calendars", note: "2 calendars" });
+    ).toMatchObject({ title: "已列出日历", note: "2 个日历" });
   });
 
   it("writes an event's time for the viewer", () => {

@@ -91,7 +91,7 @@ export function SidePanel({
       {sized && (
         <div
           {...resize.separatorProps}
-          aria-label="Resize panel"
+          aria-label="调整面板宽度"
           tabIndex={0}
           data-testid="side-panel-resize-handle"
           className="group absolute inset-y-0 -left-1 z-10 hidden w-2 touch-none cursor-col-resize outline-none select-none lg:block"

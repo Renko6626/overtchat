@@ -15,7 +15,7 @@ import { DOCUMENT_ICONS } from "./DocumentCard";
 import { SidePanel, SidePanelHeader } from "./SidePanel";
 
 function countLabel(count: number): string {
-  return count === 1 ? "1 file" : `${count} files`;
+  return count === 1 ? "1 个文件" : `${count} 个文件`;
 }
 
 /** Shows and hides the side panel with the conversation's files. */
@@ -35,7 +35,7 @@ export function ChatFilesButton({
       className={cn("max-md:h-10", open && "bg-accent text-foreground hover:bg-accent")}
       aria-label={countLabel(count)}
       aria-expanded={open}
-      title={open ? "Hide files" : "Show files"}
+      title={open ? "隐藏文件" : "显示文件"}
       onClick={onToggle}
     >
       <File className="size-4" />
@@ -50,8 +50,8 @@ export function BackToFilesButton({ onClick }: { onClick: () => void }) {
     <Button
       variant="ghost"
       size="icon-sm"
-      aria-label="Back to files"
-      title="Back to files"
+      aria-label="返回文件列表"
+      title="返回文件列表"
       onClick={onClick}
     >
       <ArrowLeft />
@@ -74,20 +74,20 @@ export function ChatFilesPanel({
   const { outputs, uploads } = files;
   const count = outputs.length + uploads.length;
   return (
-    <SidePanel aria-label="Files" data-files-panel="" variant="docked" onClose={onClose}>
+    <SidePanel aria-label="文件" data-files-panel="" variant="docked" onClose={onClose}>
       <SidePanelHeader>
         <span className="flex size-8 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground">
           <Files className="size-4" />
         </span>
         <div className="min-w-0 flex-1">
-          <h2 className="truncate text-sm font-medium">Files</h2>
+          <h2 className="truncate text-sm font-medium">文件</h2>
           <p className="truncate text-xs text-muted-foreground">{countLabel(count)}</p>
         </div>
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Close files"
-          title="Close files"
+          aria-label="关闭文件面板"
+          title="关闭文件面板"
           onClick={onClose}
         >
           <X />
@@ -96,11 +96,11 @@ export function ChatFilesPanel({
       <div className="min-h-0 flex-1 space-y-3 overflow-y-auto p-2">
         {count === 0 && (
           <p className="px-2 py-8 text-center text-sm text-muted-foreground">
-            Files you attach and files the assistant makes appear here.
+            你添加的附件和助手生成的文件会显示在这里。
           </p>
         )}
         {outputs.length > 0 && (
-          <Group label="Outputs">
+          <Group label="产出">
             {outputs.map((output) => {
               if (output.kind === "file") {
                 return (
@@ -117,7 +117,7 @@ export function ChatFilesPanel({
                 <Item
                   key={document.id}
                   icon={<Icon className="size-4" />}
-                  name={document.title || "Untitled"}
+                  name={document.title || "未命名"}
                   label={DOCUMENT_TYPE_LABELS[document.type]}
                   onOpen={() => onOpenDocument(document.toolCallId)}
                 />
@@ -126,7 +126,7 @@ export function ChatFilesPanel({
           </Group>
         )}
         {uploads.length > 0 && (
-          <Group label="Uploads">
+          <Group label="上传">
             {uploads.map((file) => (
               <FileItem key={file.id} file={file} onOpen={() => onOpenFile(file)} />
             ))}

@@ -119,7 +119,7 @@ export default function OpenUIRenderer(props: OpenUIRendererProps) {
       fallback={
         <OpenUIFallback
           text={props.fallbackText}
-          error="Interactive UI could not be rendered. The readable answer is shown below."
+          error="无法渲染交互界面，下方显示可读的回复内容。"
         />
       }
     >
@@ -219,7 +219,7 @@ function OpenUIContent({
         {failed && (
           <OpenUIFallback
             text={fallbackText}
-            error="Some interactive content could not be rendered. The readable answer is shown below."
+            error="部分交互内容无法渲染，下方显示可读的回复内容。"
           />
         )}
       </div>

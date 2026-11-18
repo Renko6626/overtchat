@@ -98,7 +98,7 @@ describe("bundled speech transport", () => {
     );
     expect(response.status).toBe(503);
     expect(await response.json()).toEqual({
-      error: "Dictation is turned off on this server.",
+      error: "语音输入已在本服务器关闭。",
       code: "speech_disabled",
     });
   });
@@ -189,8 +189,8 @@ for (const service of ["stt", "tts"] as const) {
       expect(response.status).toBe(502);
       const body = await response.json();
       expect(body.code).toBe("speech_unreachable");
-      expect(body.error).toContain("Couldn't reach");
-      expect(body.error).not.toMatch(/set up|setup|configured/);
+      expect(body.error).toContain("无法连接");
+      expect(body.error).not.toMatch(/配置/);
     });
 
     it("reports missing configuration only when no endpoint is configured", async () => {

@@ -13,7 +13,7 @@ function shortDate(iso: string | undefined): string {
   const date = new Date(iso);
   return Number.isNaN(date.getTime())
     ? ""
-    : date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    : date.toLocaleDateString("zh-CN", { month: "short", day: "numeric" });
 }
 
 /**
@@ -34,7 +34,7 @@ export function GmailStep({ part }: { part: GmailToolPart }) {
         </span>
         <span className="shrink-0 text-muted-foreground">
           {display.status === "error"
-            ? "Failed"
+            ? "失败"
             : running
               ? display.detail && `${display.title}…`
               : display.note}
@@ -67,7 +67,7 @@ function MessageRow({ row }: { row: GmailToolRow }) {
           row.unread && "font-medium",
         )}
       >
-        {row.sender || "(unknown sender)"}
+        {row.sender || "（未知发件人）"}
       </span>
       <span
         className={cn(
@@ -91,7 +91,7 @@ function MessageRow({ row }: { row: GmailToolRow }) {
       href={row.href}
       target="_blank"
       rel="noopener noreferrer"
-      title="Open in Gmail"
+      title="在 Gmail 中打开"
       className={cn(className, "motion-colors hover:bg-accent/60")}
     >
       {content}

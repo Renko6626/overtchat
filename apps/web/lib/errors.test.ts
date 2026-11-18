@@ -4,7 +4,7 @@ import { apiError, getErrorMessage } from "@overtchat/shared";
 describe("public error messages", () => {
   it("displays messages explicitly normalized at the API boundary", () => {
     const error = apiError(503, { code: "speech_unreachable" }, "Failed", "stt");
-    expect(getErrorMessage(error)).toBe("Couldn't reach the transcription service. Try again shortly.");
+    expect(getErrorMessage(error)).toBe("无法连接转写服务，请稍后重试。");
   });
 
   it.each([
@@ -55,23 +55,23 @@ describe("public error messages", () => {
       "<html>503</html>",
     ]) {
       const error = apiError(503, body, "Failed", "stt");
-      expect(error.message).toContain("temporarily unavailable");
-      expect(error.message).not.toMatch(/configured|set up|setup|turned off/);
+      expect(error.message).toContain("暂时不可用");
+      expect(error.message).not.toMatch(/配置|关闭/);
     }
   });
 
   it("uses explicit speech reasons and distinguishes upstream credentials from viewer authentication", () => {
     expect(
       apiError(503, { code: "speech_disabled" }, "Failed", "stt").message,
-    ).toContain("turned off");
+    ).toContain("关闭");
     expect(
       apiError(503, { code: "speech_not_configured" }, "Failed", "stt").message,
-    ).toContain("hasn't been set up");
+    ).toContain("尚未");
     expect(
       apiError(502, { code: "speech_provider_auth" }, "Failed", "tts").message,
-    ).toContain("server's credentials");
+    ).toContain("凭据");
     expect(apiError(401, "Unauthorized", "Failed", "tts").message).toContain(
-      "Sign in to continue",
+      "请登录",
     );
   });
 });

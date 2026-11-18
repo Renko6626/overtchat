@@ -35,11 +35,11 @@ afterEach(async () => {
 });
 
 it.each([
-  [503, "speech_disabled", false, "turned off"],
-  [503, "speech_not_configured", false, "hasn't been set up"],
-  [502, "speech_provider_auth", false, "server's credentials"],
-  [502, "speech_unreachable", true, "Couldn't reach"],
-  [504, "speech_timeout", true, "too long"],
+  [503, "speech_disabled", false, "关闭"],
+  [503, "speech_not_configured", false, "尚未"],
+  [502, "speech_provider_auth", false, "凭据"],
+  [502, "speech_unreachable", true, "无法连接"],
+  [504, "speech_timeout", true, "超时"],
 ])(
   "offers playback retry only when it can help: %s %s",
   async (status, code, canRetry, message) => {

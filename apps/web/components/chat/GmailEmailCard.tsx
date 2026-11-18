@@ -56,15 +56,15 @@ export function GmailEmailCard({
     email.body.split("\n").length > FOLDED_LINES;
   const busy = send.isPending || save.isPending;
   const failure = send.isError
-    ? getErrorMessage(send.error, "Could not send the email.")
+    ? getErrorMessage(send.error, "无法发送邮件。")
     : save.isError
-      ? getErrorMessage(save.error, "Could not save the email in Gmail.")
+      ? getErrorMessage(save.error, "无法保存到 Gmail。")
       : null;
 
   return (
     <div
       role="group"
-      aria-label="Gmail email"
+      aria-label="Gmail 邮件"
       className="overflow-hidden rounded-lg border bg-background/40 text-sm"
     >
       <div className="flex items-center gap-2.5 px-3 py-2.5">
@@ -82,9 +82,9 @@ export function GmailEmailCard({
             target="_blank"
             rel="noopener noreferrer"
             aria-label={
-              email.status === "sent" ? "Open in Gmail" : "Open drafts in Gmail"
+              email.status === "sent" ? "在 Gmail 中打开" : "在 Gmail 中打开草稿"
             }
-            title={email.status === "sent" ? "Open in Gmail" : "Edit in Gmail"}
+            title={email.status === "sent" ? "在 Gmail 中打开" : "在 Gmail 中编辑"}
             className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground outline-none motion-colors hover:bg-accent hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <ExternalLink className="size-3.5" />
@@ -93,7 +93,7 @@ export function GmailEmailCard({
         {email.status === "sent" ? (
           <span className="flex shrink-0 items-center gap-1 text-xs font-medium text-muted-foreground">
             <Check className="size-3.5" />
-            Sent
+            已发送
           </span>
         ) : (
           canSend &&
@@ -110,7 +110,7 @@ export function GmailEmailCard({
                     save.mutate(email);
                   }}
                 >
-                  {save.isPending ? "Saving…" : "Save to Gmail"}
+                  {save.isPending ? "保存中…" : "保存到 Gmail"}
                 </Button>
               )}
               <Button
@@ -122,7 +122,7 @@ export function GmailEmailCard({
                   send.mutate(email);
                 }}
               >
-                {send.isPending ? "Sending…" : "Send"}
+                {send.isPending ? "发送中…" : "发送"}
               </Button>
             </>
           )
@@ -145,7 +145,7 @@ export function GmailEmailCard({
               aria-expanded={expanded}
               className="mt-1.5 text-xs text-muted-foreground outline-none motion-colors hover:text-foreground focus-visible:underline"
             >
-              {expanded ? "Show less" : "Show all"}
+              {expanded ? "收起" : "展开全部"}
             </button>
           )}
         </div>

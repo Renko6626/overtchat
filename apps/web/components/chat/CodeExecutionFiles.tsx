@@ -127,7 +127,7 @@ function CodeFileImage({ file }: { file: CodeExecutionFile }) {
       )}
       data-code-file-image=""
     >
-      <FileTrigger file={file} download={false} aria-label={`Open ${file.name}`} className="block w-full">
+      <FileTrigger file={file} download={false} aria-label={`打开 ${file.name}`} className="block w-full">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={serverUrl(file.url)}
@@ -142,7 +142,7 @@ function CodeFileImage({ file }: { file: CodeExecutionFile }) {
           download={file.name}
           className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 no-underline hover:bg-accent hover:text-foreground"
         >
-          <Download className="size-3.5" /> Download
+          <Download className="size-3.5" /> 下载
         </a>
       </span>
     </span>
@@ -196,8 +196,8 @@ function CodeFileCard({ file }: { file: CodeExecutionFile }) {
       <a
         href={serverUrl(file.url)}
         download={file.name}
-        aria-label={`Download ${file.name}`}
-        title={`Download ${file.name}`}
+        aria-label={`下载 ${file.name}`}
+        title={`下载 ${file.name}`}
         className="flex shrink-0 items-center self-stretch px-3 text-muted-foreground motion-colors hover:bg-muted/60 hover:text-foreground"
       >
         <Download aria-hidden className="size-4" />
@@ -229,7 +229,7 @@ function RunFile({ file }: { file: CodeExecutionFile }) {
         file={file}
         download={false}
         title={file.name}
-        aria-label={`Open ${file.name}`}
+        aria-label={`打开 ${file.name}`}
         data-code-run-file=""
         className={cn(
           "block overflow-hidden rounded-md border bg-muted motion-colors hover:border-foreground/30",

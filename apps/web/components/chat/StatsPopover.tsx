@@ -23,44 +23,44 @@ export function StatsPopover({ stats }: { stats: MessageStats }) {
     stats.providerLabel !== undefined
       ? {
           iconId: stats.providerIconId,
-          label: "Provider",
+          label: "提供商",
           value: stats.providerLabel,
         }
       : null,
     stats.model !== undefined
       ? {
           iconId: stats.modelIconId ?? stats.providerIconId,
-          label: "Model",
+          label: "模型",
           value: stats.model,
         }
       : null,
     stats.contextTokens !== undefined
-      ? { label: "Context tokens", value: formatInteger(stats.contextTokens) }
+      ? { label: "上下文 Tokens", value: formatInteger(stats.contextTokens) }
       : null,
     stats.uncachedInputTokens !== undefined
       ? {
-          label: "Uncached input",
+          label: "未缓存输入",
           value: formatInteger(stats.uncachedInputTokens),
         }
       : null,
     stats.cacheReadTokens !== undefined
-      ? { label: "Cache read", value: formatInteger(stats.cacheReadTokens) }
+      ? { label: "缓存读取", value: formatInteger(stats.cacheReadTokens) }
       : null,
     stats.cacheWriteTokens !== undefined
-      ? { label: "Cache write", value: formatInteger(stats.cacheWriteTokens) }
+      ? { label: "缓存写入", value: formatInteger(stats.cacheWriteTokens) }
       : null,
     stats.responseTokens !== undefined
-      ? { label: "Response tokens", value: formatInteger(stats.responseTokens) }
+      ? { label: "输出 Tokens", value: formatInteger(stats.responseTokens) }
       : null,
     stats.totalTokens !== undefined
-      ? { label: "Total tokens", value: formatInteger(stats.totalTokens) }
+      ? { label: "总 Tokens", value: formatInteger(stats.totalTokens) }
       : null,
     stats.ttftMs !== undefined
       ? { label: "TTFT", value: formatDuration(stats.ttftMs) }
       : null,
     stats.tps !== undefined ? { label: "TPS", value: formatTps(stats.tps) } : null,
     stats.finishReason !== undefined
-      ? { label: "Finish reason", value: stats.finishReason }
+      ? { label: "结束原因", value: stats.finishReason }
       : null,
   ];
   const rows = candidateRows.filter((row): row is StatsRow => row !== null);
@@ -71,8 +71,8 @@ export function StatsPopover({ stats }: { stats: MessageStats }) {
     <Popover.Root>
       <Popover.Trigger
         type="button"
-        aria-label="Message stats"
-        title="Message stats"
+        aria-label="消息统计"
+        title="消息统计"
         className="rounded-md p-1.5 text-muted-foreground motion-colors hover:bg-accent hover:text-foreground max-md:p-2.5"
       >
         <Info className="size-3.5" />

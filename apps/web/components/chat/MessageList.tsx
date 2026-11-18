@@ -335,7 +335,7 @@ export function MessageList({
               role="status"
             >
               <LoaderCircle className="size-3.5 animate-spin" />
-              Loading earlier messages
+              正在加载更早的消息
             </span>
           ) : (
             <Button
@@ -345,7 +345,7 @@ export function MessageList({
               className="pointer-events-auto rounded-full bg-background/95 shadow-sm backdrop-blur"
               onClick={onLoadOlderMessages}
             >
-              Load earlier messages
+              加载更早的消息
             </Button>
           )}
         </div>
@@ -359,7 +359,7 @@ export function MessageList({
             size="icon-sm"
             className="pointer-events-auto rounded-full bg-background/95 shadow-md backdrop-blur"
             onClick={() => virtualizer.scrollToEnd({ behavior: "smooth" })}
-            aria-label="Scroll to bottom"
+            aria-label="滚动到底部"
           >
             <ChevronDown />
           </Button>
@@ -381,18 +381,18 @@ function InferenceActivityIndicator({
     const cachedTokens = activity.cachedTokens ?? 0;
     label =
       activity.progress === undefined
-        ? "Processing prompt"
-        : `Processing prompt ${Math.round(activity.progress * 100)}%`;
+        ? "正在处理提示词"
+        : `正在处理提示词 ${Math.round(activity.progress * 100)}%`;
     if (activity.totalTokens !== undefined) {
       details.push(
-        `${formatInteger(activity.completedTokens)} / ${formatInteger(activity.totalTokens)} ${cachedTokens > 0 ? "new" : "tokens"}`,
+        `${formatInteger(activity.completedTokens)} / ${formatInteger(activity.totalTokens)} ${cachedTokens > 0 ? "新增" : "tokens"}`,
       );
     }
     if (cachedTokens > 0) {
-      details.push(`${formatInteger(cachedTokens)} cached`);
+      details.push(`${formatInteger(cachedTokens)} 缓存`);
     }
   } else {
-    label = "Generating";
+    label = "生成中";
     details.push(`${formatInteger(activity.completedTokens)} tokens`);
   }
 
@@ -422,7 +422,7 @@ function PendingIndicator() {
     <div
       className="flex items-center gap-1.5 py-2"
       role="status"
-      aria-label="Assistant is responding"
+      aria-label="助手正在回复"
     >
       <PendingDots />
     </div>
@@ -449,7 +449,7 @@ function ChatErrorBubble({
   return (
     <ErrorNotice message={chatErrorMessage(error)} actions={
       <Button variant="outline" size="sm" onClick={onReconnect}>
-        <RotateCcw /> Reconnect
+        <RotateCcw /> 重新连接
       </Button>
     } />
   );

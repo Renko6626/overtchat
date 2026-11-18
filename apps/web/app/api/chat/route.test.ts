@@ -218,7 +218,8 @@ vi.mock("@/lib/db/personalization", () => ({
 vi.mock("@/lib/title", () => ({
   ensureChatTitle: mocks.ensureChatTitle,
 }));
-vi.mock("@/lib/providers/catalog", () => ({
+vi.mock("@/lib/providers/catalog", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/providers/catalog")>()),
   getProvider: mocks.getProvider,
   modelIconForModel: mocks.modelIconForModel,
 }));
@@ -2948,6 +2949,7 @@ describe("chat route setup boundary", () => {
         cacheWriteTokens: 5,
         totalTokens: 110,
         finishReason: "stop",
+        ownKey: false,
       },
     });
   });

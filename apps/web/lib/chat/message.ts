@@ -25,23 +25,23 @@ export function dictationErrorMessage(
 ): string {
   switch (err.kind) {
     case "permission":
-      return "Microphone access denied. Allow it in your browser settings to dictate.";
+      return "麦克风权限被拒绝。请在浏览器设置中允许麦克风后使用语音输入。";
     case "insecure_context":
-      return "Microphone access requires HTTPS on this address. Open OvertChat over HTTPS, or use localhost on the computer running the server.";
+      return "此地址需要 HTTPS 才能使用麦克风。请通过 HTTPS 打开 OvertChat，或在运行服务器的电脑上使用 localhost 访问。";
     case "unsupported":
-      return "Your browser doesn't support audio recording.";
+      return "当前浏览器不支持录音。";
     case "stt_unavailable":
       return speechErrorMessage("stt", err.code) +
         (!isAdmin && (err.code === "speech_disabled" || err.code === "speech_not_configured")
-          ? " Ask an administrator to enable it." : "");
+          ? "请联系管理员启用。" : "");
     case "empty":
-      return "No speech detected. Try again.";
+      return "未检测到语音，请重试。";
     case "other":
       return err.message;
   }
 }
 
-const CHAT_ERROR_FALLBACK = "Couldn't complete the response. Please try again.";
+const CHAT_ERROR_FALLBACK = "未能完成回复，请重试。";
 const CHAT_ERROR_MAX_LENGTH = 300;
 
 /**

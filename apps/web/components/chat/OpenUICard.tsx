@@ -53,7 +53,7 @@ export function OpenUICard({
   const failed = part.state === "output-error" || (!streaming && pending);
   const fallback = (
     <div className="whitespace-pre-wrap text-sm" data-openui-fallback="">
-      {text || "Interactive UI is unavailable."}
+      {text || "交互界面不可用。"}
     </div>
   );
   return (
@@ -64,19 +64,19 @@ export function OpenUICard({
           className="flex items-center gap-2 text-xs text-muted-foreground"
         >
           <Loader2 className="size-3.5 animate-spin" />
-          Building interactive UI…
+          正在构建交互界面…
         </div>
       )}
       {failed ? (
         <>
           <p className="text-sm text-destructive" role="alert">
-            {part.errorText ?? "Interactive UI generation was interrupted."}
+            {part.errorText ?? "交互界面生成已中断。"}
           </p>
           {text && fallback}
         </>
       ) : code.trim() ? (
         <LoadingBoundary key={part.toolCallId} fallback={fallback}>
-          <Suspense fallback={<div role="status">Loading interactive UI…</div>}>
+          <Suspense fallback={<div role="status">正在加载交互界面…</div>}>
             <OpenUIRenderer
               messageId={messageId}
               toolCallId={part.toolCallId}

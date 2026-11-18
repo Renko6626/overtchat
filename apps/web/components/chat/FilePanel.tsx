@@ -42,7 +42,7 @@ export function FilePanel({
     preview?.kind === "table" || preview?.kind === "markdown" || preview?.kind === "html";
   return (
     <SidePanel
-      aria-label={`File: ${file.name}`}
+      aria-label={`文件：${file.name}`}
       data-file-panel=""
       variant={variant}
       onClose={onClose}
@@ -63,8 +63,8 @@ export function FilePanel({
           <Button
             variant="ghost"
             size="icon-sm"
-            aria-label={showSource ? "Show preview" : "Show source"}
-            title={showSource ? "Show preview" : "Show source"}
+            aria-label={showSource ? "显示预览" : "显示源码"}
+            title={showSource ? "显示预览" : "显示源码"}
             aria-pressed={showSource}
             onClick={() => setShowSource((value) => !value)}
           >
@@ -74,8 +74,8 @@ export function FilePanel({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Download file"
-          title={`Download ${file.name}`}
+          aria-label="下载文件"
+          title={`下载 ${file.name}`}
           render={<a href={serverUrl(file.url)} download={file.name} />}
         >
           <Download />
@@ -84,8 +84,8 @@ export function FilePanel({
         <Button
           variant="ghost"
           size="icon-sm"
-          aria-label="Close file"
-          title="Close file"
+          aria-label="关闭文件"
+          title="关闭文件"
           onClick={onClose}
         >
           <X />
@@ -95,7 +95,7 @@ export function FilePanel({
         {preview ? (
           <FileBody key={`${file.id}:${showSource}`} file={file} preview={preview} source={showSource} />
         ) : (
-          <Notice>There is no preview for this file type.</Notice>
+          <Notice>此文件类型不支持预览。</Notice>
         )}
       </div>
     </SidePanel>
@@ -176,11 +176,11 @@ function TextFile({
     return () => controller.abort();
   }, [file.url]);
 
-  if (loaded?.failed) return <Notice>This file could not be loaded.</Notice>;
+  if (loaded?.failed) return <Notice>无法加载此文件。</Notice>;
   if (loaded?.tooLarge) return <TooLarge />;
   if (loaded?.text === undefined) {
     return (
-      <div className="flex justify-center p-6 text-muted-foreground" role="status" aria-label="Loading file">
+      <div className="flex justify-center p-6 text-muted-foreground" role="status" aria-label="正在加载文件">
         <Loader2 className={cn("size-4", motionClasses.spinner)} />
       </div>
     );
@@ -222,5 +222,5 @@ function Notice({ children }: { children: React.ReactNode }) {
 }
 
 function TooLarge() {
-  return <Notice>This file is too large to preview. Download it to open it.</Notice>;
+  return <Notice>文件过大，无法预览。可下载后打开。</Notice>;
 }

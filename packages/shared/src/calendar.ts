@@ -168,8 +168,7 @@ function list(value: unknown): Record<string, unknown>[] {
 }
 
 function count(total: number, noun: string, more = false): string {
-  if (total === 0) return `No ${noun}s`;
-  return `${total}${more ? "+" : ""} ${noun}${total === 1 && !more ? "" : "s"}`;
+  return `${total}${more ? "+" : ""} ${noun}`;
 }
 
 /**
@@ -206,7 +205,7 @@ function eventRow(
   const more = typeof event.moreGuests === "number" ? event.moreGuests : 0;
   return [
     {
-      title: text(event.title) ?? "(no title)",
+      title: text(event.title) ?? "（无标题）",
       start: text(event.start),
       end: text(event.end),
       allDay: event.allDay === true,
@@ -222,11 +221,11 @@ const TITLES: Record<
   CalendarToolDisplay["action"],
   [running: string, done: string]
 > = {
-  calendars: ["Listing calendars", "Listed calendars"],
-  events: ["Checking calendar", "Checked calendar"],
-  create: ["Adding event", "Added event to calendar"],
-  update: ["Changing event", "Changed event"],
-  delete: ["Deleting event", "Deleted event"],
+  calendars: ["正在列出日历", "已列出日历"],
+  events: ["正在查看日历", "已查看日历"],
+  create: ["正在添加日程", "已添加日程到日历"],
+  update: ["正在修改日程", "已修改日程"],
+  delete: ["正在删除日程", "已删除日程"],
 };
 
 /**
@@ -260,7 +259,7 @@ export function describeCalendarToolPart(
     title: TITLES[action][status === "running" ? 0 : 1],
     error:
       status === "error"
-        ? (text(part.errorText) ?? "Google Calendar request failed")
+        ? (text(part.errorText) ?? "Google Calendar 请求失败")
         : undefined,
   } as const;
   const account = text(output?.account);
@@ -268,7 +267,7 @@ export function describeCalendarToolPart(
   if (action === "calendars") {
     return {
       ...base,
-      note: output ? count(list(output.calendars).length, "calendar") : undefined,
+      note: output ? count(list(output.calendars).length, "个日历") : undefined,
       rows: [],
     };
   }
@@ -279,7 +278,7 @@ export function describeCalendarToolPart(
       ...base,
       detail: text(input?.query),
       note: output
-        ? count(events.length, "event", output.hasMore === true)
+        ? count(events.length, "个日程", output.hasMore === true)
         : undefined,
       rows: events.flatMap((event) => eventRow(event, account)),
     };
@@ -298,9 +297,9 @@ export function calendarActivityLabel(
 ): string {
   const display = describeCalendarToolPart(part);
   if (active) return `${TITLES[display.action][0]}…`;
-  if (display.status === "error") return "Google Calendar request failed";
+  if (display.status === "error") return "Google Calendar 请求失败";
   if (display.status === "running") {
-    return "Google Calendar request did not complete";
+    return "Google Calendar 请求未完成";
   }
   return display.title;
 }

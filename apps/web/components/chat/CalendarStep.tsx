@@ -26,7 +26,7 @@ export function CalendarStep({ part }: { part: CalendarToolPart }) {
         </span>
         <span className="shrink-0 text-muted-foreground">
           {display.status === "error"
-            ? "Failed"
+            ? "失败"
             : running
               ? display.detail && `${display.title}…`
               : display.note}
@@ -54,7 +54,7 @@ function EventRow({ row }: { row: CalendarEventRow }) {
   const content = (
     <>
       <span className="w-[42%] max-w-60 shrink-0 truncate tabular-nums text-muted-foreground">
-        {formatCalendarEventTime(row)}
+        {formatCalendarEventTime(row, "zh-CN")}
       </span>
       <span className="flex min-w-0 flex-1 items-baseline gap-1.5">
         <span
@@ -74,7 +74,7 @@ function EventRow({ row }: { row: CalendarEventRow }) {
       {row.guests > 0 && (
         <span
           className="flex shrink-0 items-center gap-1 tabular-nums text-muted-foreground"
-          title={`${row.guests} ${row.guests === 1 ? "guest" : "guests"}`}
+          title={`${row.guests} 位参与者`}
         >
           <Users className="size-3" />
           {row.guests}
@@ -88,7 +88,7 @@ function EventRow({ row }: { row: CalendarEventRow }) {
       href={row.href}
       target="_blank"
       rel="noopener noreferrer"
-      title="Open in Google Calendar"
+      title="在 Google Calendar 中打开"
       className={cn(className, "motion-colors hover:bg-accent/60")}
     >
       {content}

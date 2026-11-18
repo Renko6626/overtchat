@@ -163,7 +163,7 @@ describe("speech connection test", () => {
     );
     const response = await testRequest(id);
     expect(response.status).toBe(502);
-    expect(await response.json()).toMatchObject({ code: "speech_provider_auth", error: expect.stringContaining("server's credentials") });
+    expect(await response.json()).toMatchObject({ code: "speech_provider_auth", error: expect.stringContaining("凭据") });
   });
 
   it.each(["text/html", "application/json", "audio/mpeg"])(

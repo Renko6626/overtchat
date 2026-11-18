@@ -52,7 +52,7 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
             message:
               reason instanceof Error
                 ? reason.message
-                : "Unable to render this diagram.",
+                : "无法渲染此图表。",
           });
       });
     return () => {
@@ -82,19 +82,19 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
         data-streamdown="mermaid-block"
       >
         <div className="flex items-center justify-between gap-2 border-b bg-muted/30 px-2 py-1.5">
-          <span className="pl-1 text-xs text-muted-foreground">Diagram</span>
+          <span className="pl-1 text-xs text-muted-foreground">图表</span>
           <div className="flex items-center gap-0.5">
             {!ready && !error && (
               <Loader2
                 className="mr-2 size-3.5 animate-spin motion-reduce:animate-none"
-                aria-label="Rendering diagram"
+                aria-label="正在渲染图表"
               />
             )}
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={showSource ? "Show diagram" : "Show source"}
-              title={showSource ? "Show diagram" : "Show source"}
+              aria-label={showSource ? "显示图表" : "显示源码"}
+              title={showSource ? "显示图表" : "显示源码"}
               aria-pressed={showSource}
               onClick={() => setShowSource(!showSource)}
             >
@@ -103,12 +103,12 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Copy diagram source"
-              title="Copy diagram source"
+              aria-label="复制图表源码"
+              title="复制图表源码"
               onClick={() => {
                 void writeText(code)
-                  .then(() => toast.success("Diagram source copied"))
-                  .catch(() => toast.error("Could not copy diagram source"));
+                  .then(() => toast.success("图表源码已复制"))
+                  .catch(() => toast.error("无法复制图表源码"));
               }}
             >
               <Copy />
@@ -116,8 +116,8 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label="Download diagram as SVG"
-              title="Download diagram as SVG"
+              aria-label="下载图表（SVG）"
+              title="下载图表（SVG）"
               disabled={!ready || !!error}
               onClick={download}
             >
@@ -129,8 +129,8 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
                   ref={expandRef}
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="View fullscreen"
-                  title="View fullscreen"
+                  aria-label="全屏查看"
+                  title="全屏查看"
                   disabled={!preview || !!error}
                 />
               }
@@ -142,11 +142,11 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
         {error ? (
           <div className="space-y-2 p-3 text-sm">
             <p className="text-destructive" role="status">
-              Mermaid Error: {error}
+              Mermaid 错误：{error}
             </p>
             <details open={showSource || undefined}>
               <summary className="cursor-pointer text-muted-foreground">
-                Show Code
+                显示代码
               </summary>
               <pre className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap text-xs">
                 {code}
@@ -179,14 +179,14 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
           className="fixed inset-3 z-50 flex flex-col overflow-hidden rounded-xl border bg-background text-foreground shadow-xl outline-none sm:inset-6"
         >
           <div className="flex shrink-0 items-center justify-between border-b px-3 py-2">
-            <Dialog.Title className="text-sm font-medium">Diagram</Dialog.Title>
+            <Dialog.Title className="text-sm font-medium">图表</Dialog.Title>
             <Dialog.Close
               render={
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Exit fullscreen"
-                  title="Exit fullscreen"
+                  aria-label="退出全屏"
+                  title="退出全屏"
                 />
               }
             >
@@ -194,8 +194,7 @@ export function MermaidBlock({ code, isIncomplete }: CustomRendererProps) {
             </Dialog.Close>
           </div>
           <Dialog.Description className="sr-only">
-            Drag to pan. Scroll or pinch to zoom. Use Fit to show the entire
-            diagram.
+            拖动平移，滚动或双指缩放。点击“适应”可显示整个图表。
           </Dialog.Description>
           {preview && <DiagramViewport image={preview} fullscreen />}
         </Dialog.Popup>

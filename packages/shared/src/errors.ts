@@ -41,32 +41,32 @@ export function speechErrorMessage(
   service: SpeechService,
   code?: string,
 ): string {
-  const feature = service === "stt" ? "Dictation" : "Read aloud";
-  const provider = service === "stt" ? "transcription" : "speech playback";
+  const feature = service === "stt" ? "语音输入" : "朗读";
+  const provider = service === "stt" ? "转写服务" : "语音播放服务";
   switch (code) {
     case "speech_disabled":
-      return `${feature} is turned off on this server.`;
+      return `${feature}已在本服务器关闭。`;
     case "speech_not_configured":
-      return `${feature} hasn't been set up on this server.`;
+      return `${feature}尚未在本服务器配置。`;
     case "speech_unreachable":
-      return `Couldn't reach the ${provider} service. Try again shortly.`;
+      return `无法连接${provider}，请稍后重试。`;
     case "speech_timeout":
-      return `The ${provider} service took too long to respond. Try again.`;
+      return `${provider}响应超时，请重试。`;
     case "speech_provider_auth":
-      return `The ${provider} service rejected the server's credentials. Ask an administrator to check the speech settings.`;
+      return `${provider}拒绝了服务器的凭据，请联系管理员检查语音设置。`;
     case "speech_rate_limited":
-      return `The ${provider} service is busy. Try again shortly.`;
+      return `${provider}正忙，请稍后重试。`;
     case "speech_invalid_response":
-      return `The ${provider} service returned an invalid response. Try again.`;
+      return `${provider}返回了无效响应，请重试。`;
     default:
-      return `The ${provider} service is temporarily unavailable. Try again shortly.`;
+      return `${provider}暂时不可用，请稍后重试。`;
   }
 }
 
 /** Only normalized API errors carry a message intended for display. */
 export function getErrorMessage(
   error: unknown,
-  fallback = "Something went wrong. Please try again.",
+  fallback = "出了点问题，请重试。",
 ): string {
   return error instanceof ApiError ? error.message : fallback;
 }
@@ -96,9 +96,9 @@ export function apiError(
   let message: string;
   if (service && isSpeechErrorCode(code))
     message = speechErrorMessage(service, code);
-  else if (status === 401) message = "Sign in to continue.";
-  else if (status === 403) message = "You don't have permission to do this.";
-  else if (status === 429) message = "Too many requests. Try again shortly.";
+  else if (status === 401) message = "请登录以继续。";
+  else if (status === 403) message = "您没有权限执行此操作。";
+  else if (status === 429) message = "请求过于频繁，请稍后重试。";
   else if (service && status >= 500)
     message = speechErrorMessage(
       service,

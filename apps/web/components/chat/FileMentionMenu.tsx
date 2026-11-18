@@ -47,14 +47,14 @@ export function FileMentionMenu({
         ref={listRef}
         id={id}
         role="listbox"
-        aria-label="Project files"
+        aria-label="项目文件"
         className="max-h-72 overflow-y-auto p-1.5"
       >
         <div
           aria-hidden
           className="px-2.5 pt-1.5 pb-1 text-xs font-medium tracking-wide text-muted-foreground uppercase"
         >
-          Attach a project file
+          附加项目文件
         </div>
         {files.map((file, index) => (
           <MenuRow
@@ -66,7 +66,7 @@ export function FileMentionMenu({
             icon={<CategoryIcon category={file.category} className="size-4" />}
             title={file.filename}
             description={`${humanMediaLabel(file.mediaType)} · ${formatSize(file.size)}${
-              file.pageCount ? ` · ${file.pageCount} ${file.pageCount === 1 ? "page" : "pages"}` : ""
+              file.pageCount ? ` · ${file.pageCount} 页` : ""
             }`}
             onActivate={() => onSelect(file)}
             onHover={() => onActiveIndexChange(index)}

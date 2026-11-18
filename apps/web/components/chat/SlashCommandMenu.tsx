@@ -100,14 +100,16 @@ export function SlashCommandMenu({
         ref={listRef}
         id={id}
         role="listbox"
-        aria-label={models ? "Select model" : "Commands"}
+        aria-label={models ? "选择模型" : "命令"}
         className="max-h-72 overflow-y-auto p-1.5"
       >
         {isEmpty && (
           <p className="px-2.5 py-4 text-center text-xs text-muted-foreground">
             {models
-              ? "No models match this search."
-              : `No commands match ${query ? `“/${query}”` : "your search"}.`}
+              ? "没有匹配的模型。"
+              : query
+                ? `没有匹配“/${query}”的命令。`
+                : "没有匹配的命令。"}
           </p>
         )}
 

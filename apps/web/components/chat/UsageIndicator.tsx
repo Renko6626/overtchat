@@ -97,22 +97,22 @@ function CostSection({
             {partial ? `${cost}+` : cost}
           </div>
           <div className="mt-0.5 text-muted-foreground">
-            {partial ? "Known cost" : "Cost"}
+            {partial ? "已知费用" : "费用"}
           </div>
         </div>
       </div>
       <div className="mt-3 grid grid-cols-2 gap-x-6 gap-y-2">
-        <DetailRow label="Input" value={formatInteger(usage.inputTokens)} />
-        <DetailRow label="Output" value={formatInteger(usage.outputTokens)} />
+        <DetailRow label="输入" value={formatInteger(usage.inputTokens)} />
+        <DetailRow label="输出" value={formatInteger(usage.outputTokens)} />
         {usage.cacheReadTokens > 0 ? (
           <DetailRow
-            label="Cache read"
+            label="缓存读取"
             value={formatInteger(usage.cacheReadTokens)}
           />
         ) : null}
         {usage.cacheWriteTokens > 0 ? (
           <DetailRow
-            label="Cache write"
+            label="缓存写入"
             value={formatInteger(usage.cacheWriteTokens)}
           />
         ) : null}
@@ -159,14 +159,14 @@ export function UsageIndicator({
     context
       ? context.percentage === undefined
         ? contextUnavailable
-          ? "context usage unavailable"
-          : "context limit unknown"
-        : `${context.percentage}% context used`
+          ? "上下文用量不可用"
+          : "上下文上限未知"
+        : `已使用 ${context.percentage}% 上下文`
       : undefined,
     total && cost
       ? total.partial
-        ? `known session cost ${cost}`
-        : `session cost ${cost}`
+        ? `已知会话费用 ${cost}`
+        : `会话费用 ${cost}`
       : undefined,
   ].filter(Boolean);
 
@@ -174,8 +174,8 @@ export function UsageIndicator({
     <Popover.Root>
       <Popover.Trigger
         type="button"
-        aria-label={`Usage: ${triggerDetails.join("; ")}. Show details`}
-        title="Usage"
+        aria-label={`用量：${triggerDetails.join("；")}。查看详情`}
+        title="用量"
         className={cn(
           "inline-flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium tabular-nums text-muted-foreground outline-none motion-colors hover:bg-accent hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 data-[popup-open]:bg-accent data-[popup-open]:text-foreground max-md:h-9",
           compact && "w-8 justify-center px-0 max-md:size-10",
@@ -218,13 +218,13 @@ export function UsageIndicator({
             )}
           >
             <Popover.Title className="mb-4 text-sm font-semibold text-foreground">
-              Usage
+              用量
             </Popover.Title>
 
             {context ? (
-              <section aria-label="Context">
+              <section aria-label="上下文">
                 <div className="flex items-baseline justify-between gap-4">
-                  <h3 className="font-medium text-foreground">Context</h3>
+                  <h3 className="font-medium text-foreground">上下文</h3>
                   <span
                     className={cn(
                       "font-mono text-sm font-semibold",
@@ -238,11 +238,11 @@ export function UsageIndicator({
                   <>
                     <div
                       role="progressbar"
-                      aria-label="Context used"
+                      aria-label="已用上下文"
                       aria-valuemin={0}
                       aria-valuemax={100}
                       aria-valuenow={Math.min(100, context.percentage)}
-                      aria-valuetext={`${context.percentage}% used`}
+                      aria-valuetext={`已使用 ${context.percentage}%`}
                       className={cn(
                         "mt-2 h-1.5 overflow-hidden rounded-full bg-muted",
                         contextTone(context),
@@ -254,20 +254,20 @@ export function UsageIndicator({
                       />
                     </div>
                     <div className="mt-2 flex items-center justify-between gap-4 text-muted-foreground">
-                      <span>{formatInteger(context.usedTokens)} used</span>
+                      <span>已用 {formatInteger(context.usedTokens)}</span>
                       <span>
-                        {formatInteger(context.remainingTokens ?? 0)} remaining
+                        剩余 {formatInteger(context.remainingTokens ?? 0)}
                       </span>
                     </div>
                   </>
                 ) : (
                   <div className="mt-2 flex items-center justify-between gap-4 text-muted-foreground">
                     {contextUnavailable ? (
-                      <span>Context usage unavailable. Waiting for a reading from the agent.</span>
+                      <span>上下文用量不可用，正在等待智能体返回数据。</span>
                     ) : (
                       <>
                         <span>{formatInteger(context.usedTokens)} tokens</span>
-                        <span>Limit unknown</span>
+                        <span>上限未知</span>
                       </>
                     )}
                   </div>
@@ -277,7 +277,7 @@ export function UsageIndicator({
 
             {session ? (
               <CostSection
-                title="Session"
+                title="会话"
                 summary={`${formatInteger(session.totalTokens)} tokens`}
                 usage={session}
                 className={cn(context && "mt-4 border-t pt-4")}
@@ -286,8 +286,8 @@ export function UsageIndicator({
 
             {images ? (
               <CostSection
-                title="Images"
-                summary={`${formatInteger(images.generations)} ${images.generations === 1 ? "image" : "images"}`}
+                title="图像"
+                summary={`${formatInteger(images.generations)} 张图像`}
                 usage={images}
                 className={cn((context || session) && "mt-4 border-t pt-4")}
               />

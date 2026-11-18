@@ -88,17 +88,17 @@ export function ChatHeader({
             )}
             onClick={onToggleTemporary}
             aria-label={
-              temporary ? "Disable temporary chat" : "Enable temporary chat"
+              temporary ? "关闭临时对话" : "开启临时对话"
             }
             aria-pressed={temporary}
-            title="Temporary chat — won't be saved to history"
+            title="临时对话：不会保存到历史记录"
           >
             <Ghost />
           </Button>
         ) : temporary ? (
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-2.5 py-1 text-xs font-medium text-foreground">
             <Ghost className="size-3.5" />
-            Temporary
+            临时对话
           </span>
         ) : null}
       </div>

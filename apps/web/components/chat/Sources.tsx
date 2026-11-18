@@ -41,7 +41,7 @@ export function Sources({ message }: { message: UIMessage }) {
             );
           })}
         </div>
-        <span className="font-medium">{all.length} Sources</span>
+        <span className="font-medium">{all.length} 个来源</span>
         <ChevronRight
           className={cn("size-3.5 motion-transform", open && "rotate-90")}
         />

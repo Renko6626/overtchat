@@ -72,16 +72,16 @@ describe("attachment helpers", () => {
         undefined,
       ].map(humanMediaLabel),
     ).toEqual([
-      "PowerPoint presentation",
+      "PowerPoint 演示文稿",
       "JSON",
-      "ZIP archive",
-      "File",
-      "PNG image",
-      "SVG image",
+      "ZIP 压缩包",
+      "文件",
+      "PNG 图像",
+      "SVG 图像",
       "PYTHON",
       "CSV",
       "application/x-unknown",
-      "File",
+      "文件",
     ]);
   });
 });

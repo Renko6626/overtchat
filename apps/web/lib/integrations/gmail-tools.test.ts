@@ -323,9 +323,9 @@ describe("display", () => {
     expect(display).toMatchObject({
       action: "search",
       status: "done",
-      title: "Searched Gmail",
+      title: "已搜索 Gmail",
       detail: "from:grace is:unread",
-      note: "2+ results",
+      note: "2+ 条结果",
       rows: [
         {
           sender: "Grace Hopper",
@@ -333,16 +333,16 @@ describe("display", () => {
           unread: true,
           href: "https://mail.google.com/mail/?authuser=ada%40example.test#all/19a2b3c4d5e6f708",
         },
-        { sender: "alan@example.test", subject: "(no subject)" },
+        { sender: "alan@example.test", subject: "（无主题）" },
       ],
     });
     // Without a thread to point at, a row is not a link.
     expect(display.rows[1].href).toBeUndefined();
     expect(JSON.stringify(display)).not.toContain("private words");
     expect(gmailActivityLabel(search, true)).toBe(
-      'Searching Gmail for "from:grace is:unread"',
+      '正在搜索 Gmail："from:grace is:unread"',
     );
-    expect(gmailActivityLabel(search, false)).toBe("Searched Gmail");
+    expect(gmailActivityLabel(search, false)).toBe("已搜索 Gmail");
   });
 
   it("shows a thread by its subject and senders, never its text", () => {
@@ -367,9 +367,9 @@ describe("display", () => {
     const href =
       "https://mail.google.com/mail/?authuser=ada%40example.test#all/thread-1";
     expect(display).toMatchObject({
-      title: "Read email",
+      title: "已读取邮件",
       detail: "Plans",
-      note: "2 messages",
+      note: "2 封邮件",
       rows: [
         { sender: "Grace", attachments: ["plan.pdf", "map.png"], href },
         { sender: "Alan Turing via Staff", href },
@@ -392,12 +392,12 @@ describe("display", () => {
     const display = describeGmailToolPart(attachment);
     expect(display).toMatchObject({
       action: "attachment",
-      title: "Read attachment",
+      title: "已读取附件",
       detail: "invoice-42.pdf",
-      note: "3 pages",
+      note: "3 页",
     });
     expect(JSON.stringify(display)).not.toContain("private words");
-    expect(gmailActivityLabel(attachment, true)).toBe("Reading attachment…");
+    expect(gmailActivityLabel(attachment, true)).toBe("正在读取附件…");
     expect(
       describeGmailToolPart(
         part({
@@ -405,7 +405,7 @@ describe("display", () => {
           output: { filename: "notes.txt", offset: 60_000, pageCount: null },
         }),
       ).note,
-    ).toBe("Continued");
+    ).toBe("续读");
   });
 
   it("says what sorting did in the words of Gmail's own buttons", () => {
@@ -419,21 +419,21 @@ describe("display", () => {
 
     expect(sort([], ["INBOX"])).toMatchObject({
       action: "sort",
-      title: "3 conversations archived",
+      title: "3 个会话 已归档",
     });
-    expect(sort([], ["UNREAD"], 1).title).toBe("1 conversation marked read");
-    expect(sort(["Receipts"], []).title).toBe("3 conversations labeled Receipts");
-    expect(sort([], ["Receipts"]).title).toBe("3 conversations unlabeled Receipts");
-    expect(sort(["TRASH"], []).title).toBe("3 conversations moved to trash");
-    expect(sort(["SPAM"], [], 1).title).toBe("1 conversation marked as spam");
+    expect(sort([], ["UNREAD"], 1).title).toBe("1 个会话 标为已读");
+    expect(sort(["Receipts"], []).title).toBe("3 个会话 添加标签 Receipts");
+    expect(sort([], ["Receipts"]).title).toBe("3 个会话 移除标签 Receipts");
+    expect(sort(["TRASH"], []).title).toBe("3 个会话 移至回收站");
+    expect(sort(["SPAM"], [], 1).title).toBe("1 个会话 标为垃圾邮件");
     expect(sort(["STARRED", "Receipts"], ["INBOX", "UNREAD"])).toMatchObject({
-      title: "3 conversations updated",
-      note: "Archived, marked read, starred, labeled Receipts",
+      title: "3 个会话 已更新",
+      note: "已归档, 标为已读, 已加星标, 添加标签 Receipts",
     });
 
     const running = part({ type: "tool-gmail_modify_labels", state: "input-available" });
-    expect(describeGmailToolPart(running).title).toBe("Sorting mail");
-    expect(gmailActivityLabel(running, true)).toBe("Sorting mail…");
+    expect(describeGmailToolPart(running).title).toBe("正在整理邮件");
+    expect(gmailActivityLabel(running, true)).toBe("正在整理邮件…");
 
     expect(
       describeGmailToolPart(
@@ -442,7 +442,7 @@ describe("display", () => {
           output: { labels: [{ id: "INBOX" }, { id: "Label_1" }] },
         }),
       ),
-    ).toMatchObject({ action: "labels", title: "Listed Gmail labels", note: "2 labels" });
+    ).toMatchObject({ action: "labels", title: "已列出 Gmail 标签", note: "2 个标签" });
   });
 
   it("names a draft by its subject while it is being written", () => {
@@ -455,17 +455,17 @@ describe("display", () => {
           output: undefined,
         }),
       ),
-    ).toMatchObject({ status: "running", title: "Writing draft", detail: "Hi" });
+    ).toMatchObject({ status: "running", title: "正在撰写草稿", detail: "Hi" });
   });
 
   it("reports a running, failed, or interrupted step", () => {
     const running = part({ state: "input-available", input: {} });
     expect(describeGmailToolPart(running)).toMatchObject({
       status: "running",
-      title: "Searching Gmail",
+      title: "正在搜索 Gmail",
     });
     expect(gmailActivityLabel(running, false)).toBe(
-      "Gmail request did not complete",
+      "Gmail 请求未完成",
     );
 
     const failed = part({ state: "output-error", errorText: "Gmail needs to be reconnected." });
@@ -473,13 +473,13 @@ describe("display", () => {
       status: "error",
       error: "Gmail needs to be reconnected.",
     });
-    expect(gmailActivityLabel(failed, false)).toBe("Gmail request failed");
+    expect(gmailActivityLabel(failed, false)).toBe("Gmail 请求失败");
   });
 
   it("survives a saved step whose shape it does not recognize", () => {
     expect(
       describeGmailToolPart(part({ input: "x", output: { messages: "nope" } })),
-    ).toMatchObject({ status: "done", rows: [], note: "No results" });
+    ).toMatchObject({ status: "done", rows: [], note: "0 条结果" });
 
     // A step saved before results named their mailbox opens nothing.
     const [row] = describeGmailToolPart(
@@ -581,10 +581,10 @@ describe("in a conversation", () => {
 
   it("names the step while an email is being written", () => {
     const writing = { ...composed, state: "input-available", output: undefined };
-    expect(gmailActivityLabel(writing as never, true)).toBe("Writing email…");
+    expect(gmailActivityLabel(writing as never, true)).toBe("正在撰写邮件…");
     expect(describeGmailToolPart(writing as never)).toMatchObject({
       action: "compose",
-      title: "Writing email",
+      title: "正在撰写邮件",
     });
   });
 
@@ -711,7 +711,7 @@ describe("in a conversation", () => {
     expect(groupMessageParts([sending] as never).map((segment) => segment.kind)).toEqual([
       "activity",
     ]);
-    expect(gmailActivityLabel(sending as never, true)).toBe("Sending email…");
+    expect(gmailActivityLabel(sending as never, true)).toBe("正在发送邮件…");
     expect(
       describeGmailToolPart({
         ...sent,

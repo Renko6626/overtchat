@@ -41,16 +41,16 @@ export function GeneratedImageCard({
         {pending
           ? streaming
             ? part.type === "tool-edit_image"
-              ? "Editing image…"
-              : "Creating image…"
-            : "Image generation stopped"
+              ? "正在编辑图像…"
+              : "正在生成图像…"
+            : "图像生成已停止"
           : part.state === "output-error"
-            ? "Image generation failed"
-            : "Image created"}
+            ? "图像生成失败"
+            : "图像已生成"}
       </div>
       {part.state === "output-error" && (
         <p className="text-sm text-destructive">
-          {part.errorText ?? "The image could not be generated."}
+          {part.errorText ?? "图像生成失败。"}
         </p>
       )}
       {images.map((image) => (
@@ -62,12 +62,12 @@ export function GeneratedImageCard({
             href={serverUrl(image.url)}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Open generated image"
+            aria-label="查看生成的图像"
           >
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={serverUrl(image.url)}
-              alt={part.output?.prompt ?? "Generated image"}
+              alt={part.output?.prompt ?? "生成的图像"}
               className="max-h-[32rem] w-full object-contain"
             />
           </a>
@@ -77,7 +77,7 @@ export function GeneratedImageCard({
               download={image.filename}
               className="inline-flex items-center gap-1.5 rounded-md px-2 py-1 text-xs hover:bg-accent"
             >
-              <Download className="size-3.5" /> Download
+              <Download className="size-3.5" /> 下载
             </a>
             {onReference && (
               <Button
@@ -93,7 +93,7 @@ export function GeneratedImageCard({
                   })
                 }
               >
-                <Pencil className="size-3.5" /> Edit / Use as reference
+                <Pencil className="size-3.5" /> 编辑 / 用作参考
               </Button>
             )}
           </div>
@@ -102,18 +102,18 @@ export function GeneratedImageCard({
       {part.output && (
         <details className="text-xs text-muted-foreground">
           <summary className="cursor-pointer">
-            {part.output.model} · Image details
+            {part.output.model} · 图像详情
           </summary>
           <p className="mt-2 whitespace-pre-wrap">{part.output.prompt}</p>
           <p className="mt-1">
-            Requested format:{" "}
+            请求尺寸：{" "}
             {part.output.providerSize === "auto"
-              ? "Backend default"
+              ? "后端默认"
               : (part.output.providerSize ??
                 IMAGE_SIZE_LABELS[part.output.size] ??
-                "Auto")}
+                "自动")}
             {part.output.providerSize === undefined && (
-              <> · Quality: {part.output.quality}</>
+              <> · 质量：{part.output.quality}</>
             )}
           </p>
         </details>

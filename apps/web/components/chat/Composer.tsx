@@ -300,8 +300,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
     const list: SlashCommand[] = [
       {
         name: "search",
-        title: "Web search",
-        description: "Search the web for this message",
+        title: "联网搜索",
+        description: "为这条消息联网搜索",
         group: "actions",
         icon: Globe,
         keywords: ["web", "browse"],
@@ -315,8 +315,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
       },
       {
         name: "openui",
-        title: "Interactive UI",
-        description: "Render an interactive OpenUI interface for this message",
+        title: "交互式界面",
+        description: "为这条消息渲染 OpenUI 交互式界面",
         group: "actions",
         icon: LayoutDashboard,
         keywords: ["ui", "chart", "dashboard", "form", "table", "interactive"],
@@ -343,8 +343,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
       })),
       {
         name: "attach",
-        title: "Add photos & files",
-        description: "Upload from your device",
+        title: "添加图片和文件",
+        description: "从本机上传",
         group: "actions",
         icon: Paperclip,
         keywords: ["file", "upload", "image", "photo", "pdf"],
@@ -352,8 +352,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
       },
       {
         name: "dictate",
-        title: "Dictate",
-        description: "Record and transcribe speech",
+        title: "语音输入",
+        description: "录制并转写语音",
         group: "actions",
         icon: Mic,
         keywords: ["voice", "speak", "microphone", "transcribe"],
@@ -364,8 +364,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
     if (commandActions.temporary) {
       list.push({
         name: "temporary",
-        title: "Temporary chat",
-        description: "Chat without saving to history",
+        title: "临时对话",
+        description: "对话不会保存到历史记录",
         group: "actions",
         icon: Ghost,
         keywords: ["incognito", "private", "unsaved"],
@@ -377,8 +377,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
     if (commandActions.compact) {
       list.push({
         name: "compact",
-        title: "Compact conversation",
-        description: "Summarize older context now",
+        title: "压缩对话",
+        description: "立即总结较早的上下文",
         group: "actions",
         icon: Shrink,
         keywords: ["summarize", "context"],
@@ -390,8 +390,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
     list.push(
       {
         name: "model",
-        title: "Switch model",
-        description: "Choose which model answers",
+        title: "切换模型",
+        description: "选择由哪个模型回答",
         group: "actions",
         icon: Cpu,
         keywords: ["models", "switch"],
@@ -399,8 +399,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
       },
       {
         name: "new",
-        title: "New chat",
-        description: "Start a fresh conversation",
+        title: "新对话",
+        description: "开始一段新对话",
         group: "navigate",
         icon: Pencil,
         shortcut: ["Ctrl", "Shift", "O"],
@@ -408,8 +408,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
       },
       {
         name: "chats",
-        title: "Search chats",
-        description: "Find an earlier conversation",
+        title: "搜索对话",
+        description: "查找之前的对话",
         group: "navigate",
         icon: Search,
         keywords: ["history", "find"],
@@ -418,8 +418,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
       },
       {
         name: "settings",
-        title: "Settings",
-        description: "Models, tools, and preferences",
+        title: "设置",
+        description: "模型、工具和偏好设置",
         group: "navigate",
         icon: Settings2,
         keywords: ["preferences", "config"],
@@ -726,7 +726,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
           {imageOptions && onImageOptions && <ImageOptions value={imageOptions} model={imageModel} supportsQuality={imageSupportsQuality} configuredSize={imageConfiguredSize} onChange={onImageOptions} onClose={() => onImageOptions(undefined)} />}
           {quotes.length > 0 && (
             <ul
-              aria-label="Quoted text"
+              aria-label="引用的文字"
               className="flex max-h-40 flex-col gap-1.5 overflow-y-auto"
             >
               {quotes.map((quote) => (
@@ -740,8 +740,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                   </span>
                   <button
                     type="button"
-                    aria-label="Remove quote"
-                    title="Remove quote"
+                    aria-label="移除引用"
+                    title="移除引用"
                     className="shrink-0 rounded-md p-1 motion-colors hover:bg-accent hover:text-foreground"
                     onClick={() => {
                       setQuotes((current) =>
@@ -772,16 +772,16 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
             rows={1}
             placeholder={
               textInputDisabled
-                ? "Resume voice to continue"
+                ? "恢复语音后继续"
                 : configured
                   ? quotes.length > 0
-                    ? "Reply…"
+                    ? "回复…"
                     : projectFiles.length > 0
-                      ? "Message… / for commands, # for project files"
-                      : "Message… or / for commands"
+                      ? "输入消息…，/ 查看命令，# 引用项目文件"
+                      : "输入消息…，或按 / 查看命令"
                   : models === null || models.length > 0
-                    ? "Loading model…"
-                    : "No models configured"
+                    ? "正在加载模型…"
+                    : "尚未配置模型"
             }
             className="max-h-48 min-h-10 resize-none border-0 bg-transparent px-1 py-0 shadow-none focus-visible:ring-0 md:text-sm dark:bg-transparent"
             value={input}
@@ -824,7 +824,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                       variant="ghost"
                       size="icon-sm"
                       className="rounded-full"
-                      aria-label="Add to message"
+                      aria-label="添加到消息"
                       disabled={!attachmentsEnabled && !searchAvailable && !openuiAvailable}
                     />
                   }
@@ -847,10 +847,10 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                         <Paperclip className="size-4 shrink-0 text-muted-foreground" />
                         <span className="min-w-0 flex-1">
                           <span className="block font-medium">
-                            Add photos &amp; files
+                            添加图片和文件
                           </span>
                           <span className="block text-xs text-muted-foreground">
-                            Upload from your device
+                            从本机上传
                           </span>
                         </span>
                       </Menu.Item>
@@ -861,8 +861,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                       >
                         <Library className="size-4 shrink-0 text-muted-foreground" />
                         <span className="min-w-0 flex-1">
-                          <span className="block font-medium">Add from library</span>
-                          <span className="block text-xs text-muted-foreground">Reuse files from your chats</span>
+                          <span className="block font-medium">从文件库添加</span>
+                          <span className="block text-xs text-muted-foreground">复用对话中的文件</span>
                         </span>
                       </Menu.Item>
                       {imageAvailable && <Menu.Item
@@ -871,7 +871,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                         className="flex min-h-12 cursor-pointer items-center gap-3 rounded-lg px-2.5 py-2 outline-none data-[disabled]:opacity-50 data-[highlighted]:bg-accent"
                       >
                         <ImageIcon className="size-4 text-muted-foreground" />
-                        <span><span className="block font-medium">Create image</span><span className="block text-xs text-muted-foreground">{imageModel}</span></span>
+                        <span><span className="block font-medium">生成图片</span><span className="block text-xs text-muted-foreground">{imageModel}</span></span>
                       </Menu.Item>}
                       <Menu.CheckboxItem
                         checked={searchRequested}
@@ -882,10 +882,10 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                       >
                         <Globe className="size-4 shrink-0 text-muted-foreground" />
                         <span className="min-w-0 flex-1">
-                          <span className="block font-medium">Web search</span>
+                          <span className="block font-medium">联网搜索</span>
                           <span className="block truncate text-xs text-muted-foreground">
                             {searchAvailable
-                              ? "Always search for this message"
+                              ? "始终为这条消息联网搜索"
                               : searchUnavailableReason}
                           </span>
                         </span>
@@ -902,10 +902,10 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                       >
                         <LayoutDashboard className="size-4 shrink-0 text-muted-foreground" />
                         <span className="min-w-0 flex-1">
-                          <span className="block font-medium">Interactive UI</span>
+                          <span className="block font-medium">交互式界面</span>
                           <span className="block truncate text-xs text-muted-foreground">
                             {openuiAvailable
-                              ? "Render interactive OpenUI components"
+                              ? "渲染 OpenUI 交互式组件"
                               : openuiUnavailableReason}
                           </span>
                         </span>
@@ -949,10 +949,10 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                   type="button"
                   onClick={onToggleSearch}
                   className="flex h-7 shrink-0 items-center gap-1.5 rounded-full bg-accent px-2.5 text-xs font-medium text-accent-foreground outline-none motion-colors hover:bg-accent/80 focus-visible:ring-3 focus-visible:ring-ring/50 max-md:size-10 max-md:justify-center max-md:px-0"
-                  aria-label="Remove Web search from this message"
+                  aria-label="从这条消息中移除联网搜索"
                 >
                   <Globe className="size-3.5" />
-                  <span className="max-md:hidden">Web search</span>
+                  <span className="max-md:hidden">联网搜索</span>
                   <X className="size-3 max-md:hidden" />
                 </button>
               )}
@@ -961,10 +961,10 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                   type="button"
                   onClick={onToggleOpenUI}
                   className="flex h-7 shrink-0 items-center gap-1.5 rounded-full bg-accent px-2.5 text-xs font-medium text-accent-foreground outline-none motion-colors hover:bg-accent/80 focus-visible:ring-3 focus-visible:ring-ring/50 max-md:size-10 max-md:justify-center max-md:px-0"
-                  aria-label="Remove Interactive UI from this message"
+                  aria-label="从这条消息中移除交互式界面"
                 >
                   <LayoutDashboard className="size-3.5" />
-                  <span className="max-md:hidden">Interactive UI</span>
+                  <span className="max-md:hidden">交互式界面</span>
                   <X className="size-3 max-md:hidden" />
                 </button>
               )}
@@ -972,7 +972,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                 !connector.active || connector.ambient ? null : connector.lockedReason ? (
                   <span
                     key={connector.id}
-                    title={`${connector.title} is on for this chat`}
+                    title={`${connector.title} 已在此对话中开启`}
                     className="flex h-7 shrink-0 items-center gap-1.5 rounded-full bg-accent px-2.5 text-xs font-medium text-accent-foreground max-md:size-10 max-md:justify-center max-md:px-0"
                   >
                     <connector.icon className="size-3.5" />
@@ -984,7 +984,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                     type="button"
                     onClick={() => onToggleConnector?.(connector.id)}
                     className="flex h-7 shrink-0 items-center gap-1.5 rounded-full bg-accent px-2.5 text-xs font-medium text-accent-foreground outline-none motion-colors hover:bg-accent/80 focus-visible:ring-3 focus-visible:ring-ring/50 max-md:size-10 max-md:justify-center max-md:px-0"
-                    aria-label={`Remove ${connector.title} from this chat`}
+                    aria-label={`从此对话移除 ${connector.title}`}
                   >
                     <connector.icon className="size-3.5" />
                     <span className="max-md:hidden">{connector.title}</span>
@@ -1013,7 +1013,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                   variant="secondary"
                   className="shrink-0 rounded-full"
                   onClick={onStop}
-                  aria-label="Stop generating"
+                  aria-label="停止生成"
                 >
                   <Square className="size-3 fill-current" />
                 </Button>
@@ -1026,7 +1026,7 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                   className="shrink-0 rounded-full"
                   onClick={onEndVoice}
                   disabled={textInputDisabled}
-                  aria-label="End voice session"
+                  aria-label="结束语音会话"
                 >
                   <X />
                 </Button>
@@ -1042,9 +1042,9 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                   className="shrink-0 rounded-full"
                   onClick={onStartVoice}
                   disabled={!voiceAvailable}
-                  aria-label="Start voice conversation"
+                  aria-label="开始语音对话"
                   title={
-                    voiceAvailable ? "Voice conversation" : voiceUnavailableReason
+                    voiceAvailable ? "语音对话" : voiceUnavailableReason
                   }
                 >
                   <AudioLines />
@@ -1059,8 +1059,8 @@ export const Composer = forwardRef<ComposerHandle, ComposerProps>(function Compo
                       readyParts.length === 0)
                   }
                   onClick={submit}
-                  aria-label={streaming ? "Queue message" : "Send message"}
-                  title={streaming ? "Send after the current response" : "Send message"}
+                  aria-label={streaming ? "排队发送消息" : "发送消息"}
+                  title={streaming ? "当前回复结束后发送" : "发送消息"}
                 >
                   {uploading ? <Loader2 className={motionClasses.spinner} /> : <ArrowUp />}
                 </Button>
@@ -1108,7 +1108,7 @@ function AttachmentChip({
     <button
       type="button"
       onClick={onRemove}
-      aria-label={`Remove ${label}`}
+      aria-label={`移除 ${label}`}
       className="absolute top-0.5 right-0.5 rounded-full bg-foreground/70 p-0.5 text-background shadow-sm motion-colors hover:bg-foreground max-md:p-1"
     >
       <X className="size-3" />
@@ -1137,11 +1137,11 @@ function AttachmentChip({
 
   const sub =
     status === "error"
-      ? (attachment.error ?? "Upload failed")
+      ? (attachment.error ?? "上传失败")
       : [
-          meta?.pageCount ? `${meta.pageCount} pages` : null,
+          meta?.pageCount ? `${meta.pageCount} 页` : null,
           meta?.size != null ? formatSize(meta.size) : null,
-          meta?.truncated ? "truncated" : null,
+          meta?.truncated ? "已截断" : null,
         ]
           .filter(Boolean)
           .join(" · ");

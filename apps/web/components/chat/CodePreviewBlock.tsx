@@ -38,7 +38,7 @@ export function CodePreviewBlock({
   const readyImage =
     image && code.startsWith(image.source.trimEnd()) ? image : null;
   const error = tooLarge
-    ? "This block is too large to preview. You can still copy or download its source."
+    ? "此代码块过大，无法预览。你仍可以复制或下载其源码。"
     : failure?.source === code
       ? failure.message
       : null;
@@ -67,7 +67,7 @@ export function CodePreviewBlock({
       await loader.decode();
       if (cancelled) return;
       if (!loader.naturalWidth || !loader.naturalHeight) {
-        throw new Error("This SVG has no usable dimensions.");
+        throw new Error("此 SVG 没有可用的尺寸。");
       }
       published = true;
       setImage({
@@ -86,7 +86,7 @@ export function CodePreviewBlock({
             message:
               reason instanceof Error
                 ? reason.message
-                : "Unable to preview this SVG.",
+                : "无法预览此 SVG。",
           });
         }
       });
@@ -127,15 +127,15 @@ export function CodePreviewBlock({
             {isSvg && (isIncomplete || !readyImage) && !error && (
               <Loader2
                 className="mr-2 size-3.5 animate-spin motion-reduce:animate-none"
-                aria-label="Rendering SVG"
+                aria-label="正在渲染 SVG"
               />
             )}
             {isSvg && (
               <Button
                 variant="ghost"
                 size="icon-sm"
-                aria-label={showSource ? "Show SVG" : "Show source"}
-                title={showSource ? "Show SVG" : "Show source"}
+                aria-label={showSource ? "显示 SVG" : "显示源码"}
+                title={showSource ? "显示 SVG" : "显示源码"}
                 aria-pressed={showSource}
                 onClick={() => setShowSource(!showSource)}
               >
@@ -145,12 +145,12 @@ export function CodePreviewBlock({
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Copy ${label} source`}
-              title={`Copy ${label} source`}
+              aria-label={`复制 ${label} 源码`}
+              title={`复制 ${label} 源码`}
               onClick={() => {
                 void writeText(code)
-                  .then(() => toast.success(`${label} source copied`))
-                  .catch(() => toast.error("Could not copy source"));
+                  .then(() => toast.success(`${label} 源码已复制`))
+                  .catch(() => toast.error("无法复制源码"));
               }}
             >
               <Copy />
@@ -158,8 +158,8 @@ export function CodePreviewBlock({
             <Button
               variant="ghost"
               size="icon-sm"
-              aria-label={`Download ${label}`}
-              title={`Download ${label}`}
+              aria-label={`下载 ${label}`}
+              title={`下载 ${label}`}
               onClick={download}
             >
               <Download />
@@ -170,8 +170,8 @@ export function CodePreviewBlock({
                   ref={triggerRef}
                   variant="ghost"
                   size={isSvg ? "icon-sm" : "sm"}
-                  aria-label={isSvg ? "View SVG fullscreen" : "Preview HTML"}
-                  title={isSvg ? "View SVG fullscreen" : "Preview HTML"}
+                  aria-label={isSvg ? "全屏查看 SVG" : "预览 HTML"}
+                  title={isSvg ? "全屏查看 SVG" : "预览 HTML"}
                   disabled={!canPreview}
                   onClick={() => {
                     if (!isSvg) setDocument(htmlPreviewDocument(code));
@@ -184,7 +184,7 @@ export function CodePreviewBlock({
               ) : (
                 <>
                   <Play />
-                  Preview
+                  预览
                 </>
               )}
             </Dialog.Trigger>
@@ -207,7 +207,7 @@ export function CodePreviewBlock({
         )}
         {isSvg && readyImage && !error && (
           <div hidden={showSource}>
-            <DiagramViewport image={readyImage} alt="Generated SVG" />
+            <DiagramViewport image={readyImage} alt="生成的 SVG" />
           </div>
         )}
       </div>
@@ -219,15 +219,15 @@ export function CodePreviewBlock({
         >
           <div className="flex shrink-0 items-center justify-between border-b px-3 py-2">
             <Dialog.Title className="text-sm font-medium">
-              {label} preview
+              {label} 预览
             </Dialog.Title>
             <Dialog.Close
               render={
                 <Button
                   variant="ghost"
                   size="icon-sm"
-                  aria-label="Close preview"
-                  title="Close preview"
+                  aria-label="关闭预览"
+                  title="关闭预览"
                 />
               }
             >
@@ -236,21 +236,21 @@ export function CodePreviewBlock({
           </div>
           <Dialog.Description className="sr-only">
             {isSvg
-              ? "Drag to pan. Scroll or pinch to zoom."
-              : "Interactive preview of the generated HTML page."}
+              ? "拖动平移，滚动或双指缩放。"
+              : "生成 HTML 页面的交互式预览。"}
           </Dialog.Description>
           {isSvg
             ? readyImage && (
                 <DiagramViewport
                   image={readyImage}
-                  alt="Generated SVG"
+                  alt="生成的 SVG"
                   fullscreen
                 />
               )
             : document &&
               fullscreen && (
                 <iframe
-                  title="HTML preview"
+                  title="HTML 预览"
                   sandbox="allow-scripts"
                   referrerPolicy="no-referrer"
                   srcDoc={document}

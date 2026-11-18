@@ -71,8 +71,8 @@ afterEach(async () => {
 
 it("starts an existing chat once under the development Strict Mode effect replay", async () => {
   await act(async () => root.render(createElement(StrictMode, null, createElement(RealtimeVoiceSession, props))));
-  expect(document.body.textContent).toContain("Listening");
-  expect(document.body.textContent).not.toContain("could not start");
+  expect(document.body.textContent).toContain("聆听中");
+  expect(document.body.textContent).not.toContain("无法启动");
   expect(claims).toBe(1);
   expect(clients).toHaveLength(1);
   expect(clients[0].connect).toHaveBeenCalledOnce();
@@ -92,7 +92,7 @@ it("releases a late grant before claiming for a replacement effect", async () =>
   await act(async () => finishRelease());
   expect(claims).toBe(2);
   expect(clients).toHaveLength(1);
-  expect(document.body.textContent).toContain("Listening");
+  expect(document.body.textContent).toContain("聆听中");
 });
 
 it("ending while a grant is pending does not open a microphone or leak the lease", async () => {
@@ -131,9 +131,9 @@ it("shows submitted text during interruption and preserves it if acceptance fail
   clients[0].sendMessage.mockImplementationOnce(() => new Promise((_resolve, reject) => { fail = reject; }));
   await act(async () => ref.current!.sendMessage("Change the topic"));
   expect(document.body.textContent).toContain("Change the topic");
-  expect(document.body.textContent).toContain("Sending…");
+  expect(document.body.textContent).toContain("发送中…");
   await act(async () => fail(new Error("Private transport failure")));
   expect(document.body.textContent).toContain("Change the topic");
-  expect(document.body.textContent).toContain("Not confirmed sent.");
+  expect(document.body.textContent).toContain("未确认已发送");
   expect(document.body.textContent).not.toContain("Private transport failure");
 });

@@ -80,7 +80,7 @@ export function useChatAttachments() {
     const next = parts.map((part) => ({
       id: nextIdRef.current++,
       status: "ready" as const,
-      filename: part.filename || "image",
+      filename: part.filename || "图片",
       mediaType: part.mediaType,
       part,
       meta: {
@@ -100,7 +100,7 @@ export function useChatAttachments() {
       {
         id,
         status: "error",
-        filename: file.name || "file",
+        filename: file.name || "文件",
         mediaType: file.type || "application/octet-stream",
         error: unsupportedAttachmentMessage(file),
       },
@@ -117,7 +117,7 @@ export function useChatAttachments() {
         id,
         status: "uploading",
         previewUrl,
-        filename: file.name || "file",
+        filename: file.name || "文件",
         mediaType: file.type || "application/octet-stream",
         meta: { size: file.size },
       },
@@ -138,7 +138,7 @@ export function useChatAttachments() {
         error?: string;
       };
       if (!res.ok || !json.url || !json.mediaType) {
-        throw new Error(json.error ?? `Upload failed (${res.status})`);
+        throw new Error(json.error ?? `上传失败（${res.status}）`);
       }
       const part: FileUIPart = {
         type: "file",
@@ -160,7 +160,7 @@ export function useChatAttachments() {
         ),
       );
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Upload failed";
+      const message = err instanceof Error ? err.message : "上传失败";
       setAttachments((prev) =>
         prev.map((a) =>
           a.id === id ? { ...a, status: "error", error: message } : a,

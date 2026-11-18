@@ -85,6 +85,7 @@ raw.exec(`
     cache_write_tokens INTEGER,
     total_tokens INTEGER,
     cost_source TEXT,
+    own_key INTEGER NOT NULL DEFAULT 0,
     input_cost_nano_usd INTEGER,
     output_cost_nano_usd INTEGER,
     cache_read_cost_nano_usd INTEGER,

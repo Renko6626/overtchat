@@ -162,7 +162,7 @@ export function AppShell({
               ref={drawerRef as React.RefObject<HTMLDivElement>}
               className="fixed inset-y-0 left-0 z-50 box-border flex bg-sidebar pt-[env(safe-area-inset-top)] motion-transform data-[ending-style]:-translate-x-full data-[starting-style]:-translate-x-full md:hidden"
             >
-              <Dialog.Title className="sr-only">Navigation</Dialog.Title>
+              <Dialog.Title className="sr-only">导航</Dialog.Title>
               {sidebar}
             </Dialog.Popup>
           </Dialog.Portal>

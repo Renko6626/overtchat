@@ -39,6 +39,14 @@ interface Chat {
   pinned?: boolean;
 }
 
+const DATE_GROUP_LABELS: Record<string, string> = {
+  Today: "今天",
+  Yesterday: "昨天",
+  "Last 7 days": "近 7 天",
+  "Last 30 days": "近 30 天",
+  Older: "更早",
+};
+
 interface DatedChat extends Chat {
   updatedAt: number;
 }
@@ -52,7 +60,7 @@ export function SidebarChatList({
   chats,
   projects,
   activeChatIds,
-  emptyMessage = "No chats yet",
+  emptyMessage = "暂无对话",
   pinningSupported,
 }: {
   chats: DatedChat[];
@@ -65,7 +73,7 @@ export function SidebarChatList({
     return (
       <>
         <div className="mt-4 mb-1 px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-          Recents
+          最近
         </div>
         <p className="px-2 py-1 text-xs text-muted-foreground">
           {emptyMessage}
@@ -79,7 +87,7 @@ export function SidebarChatList({
       {groups.map((g) => (
         <div key={g.label}>
           <div className="mt-4 mb-1 px-2 text-xs font-medium tracking-wide text-muted-foreground uppercase">
-            {g.label}
+            {DATE_GROUP_LABELS[g.label] ?? g.label}
           </div>
           <ul className="flex flex-col gap-0.5">
             {g.items.map((c) => (
@@ -157,8 +165,8 @@ export function SidebarItem({
         row?.querySelector<HTMLAnchorElement>("a")?.focus();
       }
       toast.error({
-        title: chat.pinned ? "Failed to unpin chat" : "Failed to pin chat",
-        description: getErrorMessage(err, "Please try again."),
+        title: chat.pinned ? "取消置顶失败" : "置顶失败",
+        description: getErrorMessage(err, "请重试。"),
       });
     }
   }
@@ -172,8 +180,8 @@ export function SidebarItem({
       {
         onError: (err) => {
           toast.error({
-            title: "Failed to rename chat",
-            description: getErrorMessage(err, "The chat title was not changed."),
+            title: "重命名失败",
+            description: getErrorMessage(err, "对话标题未更改。"),
           });
         },
       },
@@ -190,10 +198,10 @@ export function SidebarItem({
     try {
       await deleteMut.mutateAsync(chat.id);
       setDeleteOpen(false);
-      toast.success("Chat deleted");
+      toast.success("对话已删除");
       if (active) void navigate({ to: "/" });
     } catch (err) {
-      setDeleteError(getErrorMessage(err, "Failed to delete"));
+      setDeleteError(getErrorMessage(err, "删除失败"));
     }
   }
 
@@ -204,8 +212,8 @@ export function SidebarItem({
       {
         onError: (err) => {
           toast.error({
-            title: "Failed to move chat",
-            description: getErrorMessage(err, "The chat stayed where it was."),
+            title: "移动对话失败",
+            description: getErrorMessage(err, "对话未移动。"),
           });
         },
       },
@@ -271,13 +279,13 @@ export function SidebarItem({
               onComplete={markTitleRevealComplete}
             />
           ) : (
-            "Untitled"
+            "未命名"
           )}
         </Link>
         {generating && (
           <span
             role="status"
-            aria-label={`Generating response for ${chat.title?.trim() || "Untitled"}`}
+            aria-label={`正在为${chat.title?.trim() || "未命名"}生成回复`}
             className={cn(
               "pointer-events-none absolute right-1 flex size-5.5 items-center justify-center text-muted-foreground motion-opacity max-md:size-7.5",
               "[@media(hover:hover)]:group-hover:opacity-0 [@media(hover:hover)]:group-focus-within:opacity-0 [@media(hover:hover)]:group-data-[menu-open=true]:opacity-0 [@media(hover:none)]:right-(--chat-actions-padding)",
@@ -296,7 +304,7 @@ export function SidebarItem({
             if (open) pinFromMenuRef.current = false;
           }}>
             <Menu.Trigger
-              aria-label="Chat actions"
+              aria-label="对话操作"
               className={cn(
                 "pointer-events-auto flex size-5.5 shrink-0 items-center justify-center rounded text-muted-foreground motion-opacity hover:bg-sidebar-border/60 hover:text-foreground max-md:size-7.5",
                 "opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 group-data-[menu-open=true]:opacity-100 [@media(hover:none)]:opacity-100",
@@ -332,7 +340,7 @@ export function SidebarItem({
                       ) : (
                         <Pin className="size-3.5 shrink-0 text-muted-foreground" />
                       )}
-                      <span>{chat.pinned ? "Unpin" : "Pin"}</span>
+                      <span>{chat.pinned ? "取消置顶" : "置顶"}</span>
                     </Menu.Item>
                   )}
                   <Menu.Item
@@ -343,12 +351,12 @@ export function SidebarItem({
                     className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 outline-none motion-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
                   >
                     <Pencil className="size-3.5 shrink-0 text-muted-foreground" />
-                    <span>Rename</span>
+                    <span>重命名</span>
                   </Menu.Item>
                   <Menu.SubmenuRoot>
                     <Menu.SubmenuTrigger className="flex w-full cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 outline-none motion-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground data-[popup-open]:bg-accent">
                       <FolderInput className="size-3.5 shrink-0 text-muted-foreground" />
-                      <span>Move to</span>
+                      <span>移动到</span>
                       <span className="ml-auto text-muted-foreground">›</span>
                     </Menu.SubmenuTrigger>
                     <Menu.Portal container={drawerRef}>
@@ -368,7 +376,7 @@ export function SidebarItem({
                                 "text-muted-foreground",
                             )}
                           >
-                            No project
+                            无项目
                           </Menu.Item>
                           {projects.length > 0 && (
                             <div className="my-1 h-px bg-border" />
@@ -397,7 +405,7 @@ export function SidebarItem({
                     className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-destructive outline-none motion-colors data-[highlighted]:bg-accent"
                   >
                     <Trash2 className="size-3.5 shrink-0" />
-                    <span>Delete</span>
+                    <span>删除</span>
                   </Menu.Item>
                 </Menu.Popup>
               </Menu.Positioner>
@@ -406,8 +414,8 @@ export function SidebarItem({
           {pinningSupported && (
             <button
               type="button"
-              aria-label={chat.pinned ? "Unpin chat" : "Pin chat"}
-              title={chat.pinned ? "Unpin chat" : "Pin chat"}
+              aria-label={chat.pinned ? "取消置顶对话" : "置顶对话"}
+              title={chat.pinned ? "取消置顶对话" : "置顶对话"}
               disabled={pinMut.isPending}
               onClick={() => togglePin()}
               className={cn(
@@ -443,21 +451,21 @@ export function SidebarItem({
             )}
           >
             <AlertDialog.Title className="text-base font-semibold tracking-tight">
-              Delete chat?
+              删除对话？
             </AlertDialog.Title>
             <AlertDialog.Description className="mt-2 text-sm text-muted-foreground">
               {chat.title?.trim() ? (
                 <>
                   <span className="font-medium text-foreground">
                     {chat.title.trim()}
-                  </span>{" "}
-                  will be permanently deleted.
+                  </span>
+                  将被永久删除。
                 </>
               ) : (
-                "This chat will be permanently deleted."
+                "此对话将被永久删除。"
               )}
               <span className="mt-2 block text-xs">
-                Files used only in this chat will also be removed from your library.
+                仅在此对话中使用过的文件也会从文件库中移除。
               </span>
             </AlertDialog.Description>
             {deleteError && (
@@ -473,7 +481,7 @@ export function SidebarItem({
                   />
                 }
               >
-                Cancel
+                取消
               </AlertDialog.Close>
               <Button
                 variant="destructive"
@@ -481,7 +489,7 @@ export function SidebarItem({
                 disabled={deleteMut.isPending}
                 onClick={confirmDelete}
               >
-                {deleteMut.isPending ? "Deleting…" : "Delete"}
+                {deleteMut.isPending ? "删除中…" : "删除"}
               </Button>
             </div>
           </AlertDialog.Popup>
@@ -550,7 +558,7 @@ function ChatExportMenuItem({ chatId }: { chatId: string }) {
         className={EXPORT_ITEM_CLASSES}
       >
         <Download className="size-3.5 shrink-0 text-muted-foreground" />
-        <span>Export</span>
+        <span>导出</span>
       </Menu.Item>
     );
   }
@@ -569,7 +577,7 @@ function ChatExportMenuItem({ chatId }: { chatId: string }) {
         )}
       >
         <Download className="size-3.5 shrink-0 text-muted-foreground" />
-        <span>Export</span>
+        <span>导出</span>
         <span className="ml-auto text-muted-foreground">›</span>
       </Menu.SubmenuTrigger>
       <Menu.Portal container={drawerRef}>

@@ -26,8 +26,8 @@ export function ShareChatButton({
       <Button
         variant="ghost"
         size="icon-sm"
-        aria-label="Share chat"
-        title="Share chat"
+        aria-label="分享对话"
+        title="分享对话"
         disabled={disabled}
         onClick={() => setOpen(true)}
       >
@@ -62,7 +62,7 @@ export function ShareChatDialog({
       setCopied(true);
       setCopyError("");
     } catch {
-      setCopyError("Could not copy. Select the link and copy it manually.");
+      setCopyError("复制失败。请选中链接后手动复制。");
     }
   }
 
@@ -78,33 +78,30 @@ export function ShareChatDialog({
         <Dialog.Popup className="fixed left-1/2 top-1/2 z-[60] flex max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 flex-col rounded-xl border bg-card p-6 text-card-foreground shadow-lg outline-none">
           <div className="flex items-center justify-between gap-4">
             <Dialog.Title className="text-lg font-semibold">
-              Share chat
+              分享对话
             </Dialog.Title>
             <Dialog.Close
               render={
-                <Button variant="ghost" size="icon-sm" aria-label="Close" />
+                <Button variant="ghost" size="icon-sm" aria-label="关闭" />
               }
             >
               <X />
             </Dialog.Close>
           </div>
           <Dialog.Description className="mt-2 text-sm text-muted-foreground">
-            Anyone with the link can read this conversation, including its
-            attachments, reasoning, and tool results. New messages and edits
-            stay private until you update the link. Deleting this chat also
-            removes its link.
+            任何获得链接的人都可以阅读此对话，包括其附件、思考过程和工具结果。新消息和编辑在你更新链接前保持私密。删除此对话会同时移除其链接。
           </Dialog.Description>
           {share && (
             <div className="mt-4 space-y-2">
               <div className="flex gap-2">
                 <Input
-                  aria-label="Shared chat link"
+                  aria-label="分享的对话链接"
                   readOnly
                   value={url}
                   onFocus={(e) => e.target.select()}
                 />
                 <Button onClick={() => void copy()}>
-                  {copied ? "Copied" : "Copy link"}
+                  {copied ? "已复制" : "复制链接"}
                 </Button>
               </div>
               <a
@@ -113,17 +110,17 @@ export function ShareChatDialog({
                 target="_blank"
                 rel="noreferrer"
               >
-                View shared chat
+                查看分享的对话
               </a>
             </div>
           )}
           <details className="mt-4 min-h-0 overflow-auto rounded-lg border p-3">
             <summary className="cursor-pointer text-sm font-medium">
-              Preview current conversation
+              预览当前对话
             </summary>
             <div className="mt-4">
               {preview.isPending ? (
-                <p role="status">Loading preview…</p>
+                <p role="status">正在加载预览…</p>
               ) : preview.error ? (
                 <p role="alert">{preview.error.message}</p>
               ) : (
@@ -148,7 +145,7 @@ export function ShareChatDialog({
                   change.mutate({ chatId, method: "DELETE" });
                 }}
               >
-                Unshare
+                取消分享
               </Button>
             )}
             <Button
@@ -165,10 +162,10 @@ export function ShareChatDialog({
               }}
             >
               {change.isPending
-                ? "Saving…"
+                ? "保存中…"
                 : share
-                  ? "Update link"
-                  : "Create link"}
+                  ? "更新链接"
+                  : "创建链接"}
             </Button>
           </div>
         </Dialog.Popup>

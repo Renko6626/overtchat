@@ -148,7 +148,7 @@ export function QuoteSelectionButton({
         setPosition(null);
       }}
     >
-      <Reply /> Reply
+      <Reply /> 引用
     </Button>
   );
 }

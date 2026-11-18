@@ -25,17 +25,17 @@ export function ImageOptions({
   return (
     <div className="flex flex-wrap items-center gap-3 rounded-lg bg-muted/60 px-3 py-2 text-xs">
       <span className="font-medium">
-        Create image{model ? ` · ${model}` : ""}
+        生成图像{model ? ` · ${model}` : ""}
       </span>
       {configuredSize ? (
         <span>
-          Size: {configuredSize === "auto" ? "Backend default" : configuredSize}
+          尺寸：{configuredSize === "auto" ? "后端默认" : configuredSize}
         </span>
       ) : (
         <label className="flex items-center gap-1">
-          Size
+          尺寸
           <select
-            aria-label="Image size"
+            aria-label="图像尺寸"
             className="rounded border bg-background p-1"
             value={value.size}
             onChange={(event) =>
@@ -55,9 +55,9 @@ export function ImageOptions({
       )}
       {supportsQuality && (
         <label className="flex items-center gap-1">
-          Quality
+          质量
           <select
-            aria-label="Image quality"
+            aria-label="图像质量"
             className="rounded border bg-background p-1"
             value={value.quality}
             onChange={(event) =>
@@ -79,7 +79,7 @@ export function ImageOptions({
       <button
         type="button"
         onClick={onClose}
-        aria-label="Remove image request"
+        aria-label="移除图像请求"
         className="ml-auto rounded p-1 hover:bg-accent"
       >
         <X className="size-4" />

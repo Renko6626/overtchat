@@ -183,7 +183,7 @@ export function MessageBubble({
           {sentAt !== null && <MessageTime at={sentAt} />}
           <CopyButton text={text} />
           {!readOnly && <ActionButton
-            label="Edit"
+            label="编辑"
             onClick={() => setEditing(true)}
             icon={<Pencil className="size-3.5" />}
           />}
@@ -234,7 +234,7 @@ function UserQuote({ text }: { text: string }) {
           aria-expanded={expanded}
           onClick={() => setExpanded((current) => !current)}
         >
-          {expanded ? "Show less" : "Show more"}
+          {expanded ? "收起" : "展开"}
         </button>
       )}
     </blockquote>
@@ -407,13 +407,13 @@ function AssistantBubble({
             speech={speech}
           />}
           {!readOnly && onRegenerate && <ActionButton
-            label="Regenerate"
+            label="重新生成"
             onClick={() => onRegenerate(message.id)}
             icon={<RotateCcw className="size-3.5" />}
           />}
           {!readOnly && onContinue && (
             <ActionButton
-              label="Continue response"
+              label="继续生成"
               onClick={() => onContinue(message.id)}
               icon={<Play className="size-3.5" />}
             />
@@ -431,7 +431,7 @@ function AssistantBubble({
 
 function MessageAttachment({ part }: { part: FileUIPart }) {
   const isImage = part.mediaType?.startsWith("image/") ?? false;
-  const label = part.filename ?? (isImage ? "image" : "file");
+  const label = part.filename ?? (isImage ? "图像" : "文件");
   if (isImage) {
     return (
       <a href={serverUrl(part.url)} target="_blank" rel="noopener noreferrer">
@@ -522,7 +522,7 @@ function EditBubble({
                   onClick={() =>
                     setFiles((prev) => prev.filter((_, j) => j !== i))
                   }
-                  aria-label={`Remove ${part.filename ?? "attachment"}`}
+                  aria-label={`移除 ${part.filename ?? "附件"}`}
                   className="absolute top-1 right-1 rounded-full bg-foreground/70 p-0.5 text-background shadow-sm hover:bg-foreground max-md:p-1"
                 >
                   <X className="size-3" />
@@ -535,7 +535,7 @@ function EditBubble({
           ref={ref}
           rows={1}
           value={draft}
-          aria-label="Edit message"
+          aria-label="编辑消息"
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
@@ -557,7 +557,7 @@ function EditBubble({
             className="h-9 rounded-full px-4"
             onClick={onCancel}
           >
-            Cancel
+            取消
           </Button>
           <Button
             type="submit"
@@ -565,7 +565,7 @@ function EditBubble({
             className="h-9 rounded-full px-5"
             disabled={!canSave}
           >
-            Send
+            发送
           </Button>
         </div>
       </form>
@@ -577,7 +577,7 @@ function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <ActionButton
-      label={copied ? "Copied" : "Copy"}
+      label={copied ? "已复制" : "复制"}
       icon={
         copied ? (
           <Check className="size-3.5" />
@@ -593,8 +593,8 @@ function CopyButton({ text }: { text: string }) {
           })
           .catch(() => {
             toast.error({
-              title: "Failed to copy",
-              description: "Clipboard access was denied by the browser.",
+              title: "复制失败",
+              description: "浏览器拒绝了剪贴板访问。",
             });
           });
       }}
@@ -615,7 +615,7 @@ function SpeakButton({
   const active = speech.activeId === messageId;
   const loading = active && speech.status === "loading";
   const live = active && (speech.status === "playing" || speech.status === "paused");
-  const label = live ? "Stop" : loading ? "Loading…" : "Speak";
+  const label = live ? "停止" : loading ? "加载中…" : "朗读";
   const icon = loading ? (
     <Loader2 className={`size-3.5 ${motionClasses.spinner}`} />
   ) : live ? (

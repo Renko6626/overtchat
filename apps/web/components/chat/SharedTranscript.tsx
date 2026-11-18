@@ -64,7 +64,7 @@ export function SharedTranscript({
         <article
           key={message.id}
           aria-label={
-            message.role === "user" ? "User message" : "Assistant message"
+            message.role === "user" ? "用户消息" : "助手消息"
           }
         >
           <MessageBubble
@@ -85,7 +85,7 @@ export function SharedTranscript({
           disabled={loadingMore}
           onClick={onLoadMore ?? (() => setVisible((count) => count + 50))}
         >
-          {loadingMore ? "Loading messages…" : "Show more messages"}
+          {loadingMore ? "正在加载消息…" : "显示更多消息"}
         </Button>
       )}
     </div>

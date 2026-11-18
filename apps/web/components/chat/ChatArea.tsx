@@ -199,8 +199,8 @@ export function ChatArea({
   );
   const searchAvailable = webSearchEnabled && modelSupportsSearch;
   const searchUnavailableReason = !webSearchEnabled
-    ? "Web search is disabled in Settings → Tools"
-    : "Web search is unavailable for this model";
+    ? "联网搜索已在设置 → 工具中关闭"
+    : "此模型不支持联网搜索";
 
   const [searchRequested, setSearchRequested] = useState(false);
   const [openuiEnabled] = useLocalStorage<boolean>(
@@ -208,7 +208,7 @@ export function ChatArea({
     DEFAULT_OPENUI_ENABLED,
   );
   const openuiAvailable = modelSupportsSearch;
-  const openuiUnavailableReason = "Interactive UI is unavailable for this model";
+  const openuiUnavailableReason = "此模型不支持交互式界面";
   const [openuiRequested, setOpenuiRequested] = useState(false);
   const { data: capabilitiesData } = usePublicCapabilities();
   const imageCapability = capabilitiesData?.capabilities.images;
@@ -234,8 +234,8 @@ export function ChatArea({
     ?.find((chat) => chat.id === chatId)
     ?.title?.trim();
   const headerTitle = temporary
-    ? "Temporary chat"
-    : persistedTitle || (isNew ? null : "Untitled");
+    ? "临时对话"
+    : persistedTitle || (isNew ? null : "未命名");
   const [composerDraftScope, setComposerDraftScope] = useState<string | null>(
     () =>
       initialQuery?.trim()
@@ -458,8 +458,8 @@ export function ChatArea({
     } catch {
       setOlderMessagesFailed(true);
       toast.error({
-        title: "Could not load older messages",
-        description: "Check your connection and try again.",
+        title: "无法加载更早的消息",
+        description: "请检查网络连接后重试。",
       });
     } finally {
       loadingOlderMessagesRef.current = false;
@@ -510,13 +510,13 @@ export function ChatArea({
             ambient: connection.alwaysOn,
             lockedReason:
               connection.status === "needs_reconnect"
-                ? `Reconnect ${connector.title} in Settings → Tools → Connectors`
+                ? `请在设置 → 工具 → 连接器中重新连接 ${connector.title}`
                 : !modelSupportsSearch
-                  ? `${connector.title} is unavailable for this model`
+                  ? `${connector.title} 不适用于此模型`
                   : connection.alwaysOn
-                    ? "Always available"
+                    ? "始终可用"
                     : usedHere
-                      ? "On for this chat"
+                      ? "已在此对话中开启"
                       : undefined,
           },
         ];
@@ -642,8 +642,8 @@ export function ChatArea({
     setContextStatus(null);
     void generation.cancel().catch(() => {
       toast.error({
-        title: "Could not stop the response",
-        description: "Check your connection and try again.",
+        title: "无法停止回复",
+        description: "请检查网络连接后重试。",
       });
     });
   }
@@ -851,7 +851,7 @@ export function ChatArea({
       setVoiceActive(false);
       return true;
     } catch (error) {
-      toast.error({ title: "Could not end voice", description: error instanceof Error ? error.message : "Try again." });
+      toast.error({ title: "无法结束语音", description: error instanceof Error ? error.message : "请重试。" });
       return false;
     } finally { setVoiceEnding(false); }
   }
@@ -887,13 +887,13 @@ export function ChatArea({
       streaming={streaming}
       searchAvailable={searchAvailable && !voiceActive}
       searchUnavailableReason={voiceActive
-        ? "End voice to require a web search. Voice can still search automatically."
+        ? "结束语音后才能强制联网搜索。语音模式下仍会自动搜索。"
         : searchUnavailableReason}
       searchRequested={searchAvailable && !voiceActive && searchRequested}
       openuiAvailable={openuiAvailable && !voiceActive}
       openuiUnavailableReason={
         voiceActive
-          ? "End voice to request an interactive UI."
+          ? "结束语音后才能请求交互式界面。"
           : openuiUnavailableReason
       }
       openuiRequested={openuiAvailable && !voiceActive && openuiRequested}
@@ -915,15 +915,15 @@ export function ChatArea({
       voiceUnavailableReason={
         !configured
           ? modelLoading
-            ? "Loading model…"
-            : "Configure a model before starting voice"
+            ? "正在加载模型…"
+            : "请先配置模型再开始语音"
           : voiceCapability?.unavailableReason === "stt-unavailable"
-            ? "Speech-to-text is disabled"
+            ? "语音转文字已关闭"
             : voiceCapability?.unavailableReason === "tts-unavailable"
-              ? "Text-to-speech is disabled"
+              ? "文字转语音已关闭"
               : voiceCapability?.unavailableReason === "not-configured"
-                ? "Voice authentication is not configured"
-                : "Realtime voice is unavailable"
+                ? "语音认证尚未配置"
+                : "实时语音不可用"
       }
       attachmentsEnabled={!voiceActive}
       projectFiles={projectFiles}
@@ -934,13 +934,13 @@ export function ChatArea({
             ? {
                 onCompact: handleCompact,
                 unavailableReason: streaming
-                  ? "Wait for the response to finish"
+                  ? "请等待回复完成"
                   : !configured
                     ? modelLoading
-                      ? "Loading model…"
-                      : "Configure a model first"
+                      ? "正在加载模型…"
+                      : "请先配置模型"
                     : messages.length === 0
-                      ? "Start a conversation first"
+                      ? "请先开始一段对话"
                       : undefined,
               }
             : undefined,
@@ -1025,8 +1025,8 @@ export function ChatArea({
 
       {fileDrop.active && (
         <FileDropOverlay
-          title="Drop files to attach"
-          description="Images, PDFs, docs, spreadsheets, and text files"
+          title="松开以添加文件"
+          description="图片、PDF、文档、表格和文本文件"
         />
       )}
 
@@ -1042,17 +1042,16 @@ export function ChatArea({
           ) : (
             <div className="w-full max-w-3xl">
               <h1 className="mb-10 text-center text-2xl font-semibold tracking-tight md:text-3xl">
-                {temporary ? "Temporary chat" : "What can I help with?"}
+                {temporary ? "临时对话" : "有什么可以帮你的？"}
               </h1>
               {models?.length === 0 && (
                 <p className="mb-6 text-center text-sm text-muted-foreground">
-                  No models configured. An admin can add one in Settings →
-                  Models.
+                  尚未配置模型。管理员可在设置 → 模型中添加。
                 </p>
               )}
               {configured && temporary && (
                 <p className="mb-6 text-center text-sm text-muted-foreground">
-                  {"Messages won't be saved to your history."}
+                  {"消息不会保存到历史记录。"}
                 </p>
               )}
               {composer}

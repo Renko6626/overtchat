@@ -90,7 +90,7 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
       `[data-chat-id="${CSS.escape(request.id)}"] a`,
     );
     (target ?? request.sidebar.querySelector<HTMLButtonElement>(
-      'button[aria-label="Search chats"]',
+      'button[aria-label="搜索对话"]',
     ))?.focus();
   }, [chats, pinFocusRef]);
 
@@ -146,12 +146,13 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
           className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm motion-colors hover:bg-sidebar-accent"
         >
           <Pencil className="size-4 shrink-0 text-muted-foreground" />
-          <span className="flex-1">New chat</span>
+          <span className="flex-1">新对话</span>
           <Shortcut keys={["Ctrl", "Shift", "O"]} />
           <LinkPendingIndicator to="/" />
         </Link>
         <button
           type="button"
+          aria-label="搜索对话"
           onClick={() => {
             closeMobile();
             openPalette();
@@ -159,7 +160,7 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
           className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm motion-colors hover:bg-sidebar-accent"
         >
           <Search className="size-4 shrink-0 text-muted-foreground" />
-          <span className="flex-1 text-left">Search chats</span>
+          <span className="flex-1 text-left">搜索对话</span>
           <Shortcut keys={["Ctrl", "K"]} />
         </button>
         <Link
@@ -172,7 +173,7 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
           )}
         >
           <Library className="size-4 shrink-0 text-muted-foreground" />
-          <span className="flex-1">Library</span>
+          <span className="flex-1">文件库</span>
           <LinkPendingIndicator to="/library" />
         </Link>
         <Link
@@ -184,14 +185,14 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
           )}
         >
           <Activity className="size-4 shrink-0 text-muted-foreground" />
-          <span className="flex-1">Activity</span>
+          <span className="flex-1">活动</span>
           <LinkPendingIndicator to="/activity" />
         </Link>
       </nav>
 
       {chats.some((chat) => chat.pinned) && (
-        <section aria-label="Pinned chats">
-          <SectionLabel>Pinned</SectionLabel>
+        <section aria-label="置顶对话">
+          <SectionLabel>置顶</SectionLabel>
           <ul className="flex flex-col gap-0.5">
             {chats.filter((chat) => chat.pinned).map((chat) => (
               <SidebarItem
@@ -207,7 +208,7 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
         </section>
       )}
 
-      <SectionLabel>Projects</SectionLabel>
+      <SectionLabel>项目</SectionLabel>
       <SidebarProjects
         projects={projectsWithChats}
         activeChatIds={activeChats}
@@ -219,13 +220,13 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
         className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground motion-colors hover:bg-sidebar-accent hover:text-foreground"
       >
         <FolderPlus className="size-4 shrink-0" />
-        <span>New project</span>
+        <span>新建项目</span>
       </button>
 
 
       <SidebarChatList
         chats={unprojected}
-        emptyMessage={chats.length > 0 ? "No recent chats" : "No chats yet"}
+        emptyMessage={chats.length > 0 ? "暂无最近对话" : "暂无对话"}
         projects={projectOptions}
         activeChatIds={activeChats}
         pinningSupported={pinningSupported}
@@ -240,7 +241,7 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
         <button
           type="button"
           onClick={closeSidebar}
-          aria-label="Collapse sidebar"
+          aria-label="收起侧边栏"
           className="rounded-md p-1.5 text-muted-foreground hover:bg-sidebar-accent hover:text-foreground max-md:p-2.5"
         >
           <PanelLeft className="size-4" />
@@ -299,14 +300,14 @@ function AgentsSidebar({
   const pathname = useLocation({ select: (location) => location.pathname });
   return (
     <>
-      <nav aria-label="Agents" className="flex flex-col gap-0.5 py-1">
+      <nav aria-label="智能体" className="flex flex-col gap-0.5 py-1">
         <Link
           to="/agents"
           onClick={closeMobile}
           className="group flex items-center gap-2 rounded-md px-2 py-1.5 text-sm motion-colors hover:bg-sidebar-accent"
         >
           <SquarePen className="size-4 shrink-0 text-muted-foreground" />
-          <span className="flex-1">New agent</span>
+          <span className="flex-1">新建智能体</span>
           <LinkPendingIndicator to="/agents" />
         </Link>
         <Link
@@ -319,7 +320,7 @@ function AgentsSidebar({
           )}
         >
           <History className="size-4 shrink-0 text-muted-foreground" />
-          <span className="flex-1">History</span>
+          <span className="flex-1">历史记录</span>
           <LinkPendingIndicator to="/agents/history" />
         </Link>
       </nav>
@@ -382,15 +383,15 @@ function AgentSessionList({
   if (!hasWorkspaces) {
     return (
       <>
-        <AgentListLabel>Workspaces</AgentListLabel>
+        <AgentListLabel>工作区</AgentListLabel>
         {isPending ? (
           <p className="px-2 py-1.5 text-xs text-muted-foreground">
-            Loading workspaces…
+            正在加载工作区…
           </p>
         ) : (
           <>
             <p className="px-2 py-1 text-xs text-muted-foreground">
-              Connect a folder to start an agent session.
+              连接文件夹即可开始智能体会话。
             </p>
             <Link
               to="/settings/connections"
@@ -399,7 +400,7 @@ function AgentSessionList({
               className="flex min-h-8 items-center gap-2 rounded-md px-2 py-1.5 text-sm text-muted-foreground motion-colors hover:bg-sidebar-accent hover:text-foreground max-md:min-h-11"
             >
               <FolderPlus aria-hidden="true" className="size-4 shrink-0" />
-              <span>Add workspace</span>
+              <span>添加工作区</span>
             </Link>
           </>
         )}
@@ -413,25 +414,25 @@ function AgentSessionList({
       const synced = result.created + result.refreshed;
       if (synced === 0) {
         toast.error({
-          title: "Sessions could not be refreshed",
+          title: "无法刷新会话",
           description: result.failures[0]?.message,
         });
       } else if (result.failures.length > 0) {
         toast.warning({
-          title: "Sessions refreshed with some errors",
-          description: `${synced} agent workspace${synced === 1 ? "" : "s"} synced; ${result.failures.length} failed.`,
+          title: "会话已刷新，但出现错误",
+          description: `已同步 ${synced} 个智能体工作区；${result.failures.length} 个失败。`,
         });
       } else {
         toast.success({
-          title: "Sessions refreshed",
-          description: `${synced} agent workspace${synced === 1 ? "" : "s"} synced.`,
+          title: "会话已刷新",
+          description: `已同步 ${synced} 个智能体工作区。`,
         });
       }
     } catch (error) {
       toast.error({
-        title: "Sessions could not be refreshed",
+        title: "无法刷新会话",
         description:
-          error instanceof Error ? error.message : "Refresh failed.",
+          error instanceof Error ? error.message : "刷新失败。",
       });
     }
   }
@@ -448,7 +449,7 @@ function AgentSessionList({
               ref={doneRef}
               onClick={() => setOrganizing(false)}
             >
-              Done
+              完成
             </Button>
           ) : (
             <span className="flex items-center gap-0.5">
@@ -457,13 +458,13 @@ function AgentSessionList({
                   ref={optionsRef}
                   aria-label={
                     activeProviderFilter
-                      ? `Agent list options, filtered by ${agentProviderMetadata(activeProviderFilter).label}`
-                      : "Agent list options"
+                      ? `智能体列表选项，已按 ${agentProviderMetadata(activeProviderFilter).label} 筛选`
+                      : "智能体列表选项"
                   }
                   title={
                     activeProviderFilter
-                      ? `List options · Filtered by ${agentProviderMetadata(activeProviderFilter).label}`
-                      : "List options"
+                      ? `列表选项 · 已按 ${agentProviderMetadata(activeProviderFilter).label} 筛选`
+                      : "列表选项"
                   }
                   className={cn(
                     "relative flex size-6 shrink-0 items-center justify-center rounded text-muted-foreground motion-colors hover:bg-sidebar-accent hover:text-foreground",
@@ -493,19 +494,19 @@ function AgentSessionList({
                         }
                       >
                         <Menu.GroupLabel className="px-2 pt-1 pb-0.5 text-xs text-muted-foreground">
-                          Group by
+                          分组方式
                         </Menu.GroupLabel>
-                        <RadioMenuItem value="status" label="Status" />
+                        <RadioMenuItem value="status" label="状态" />
                         <RadioMenuItem
                           value="workspace"
-                          label="Workspace"
+                          label="工作区"
                         />
                       </Menu.RadioGroup>
                       {providers.length > 1 && (
                         <Menu.SubmenuRoot>
                           <Menu.SubmenuTrigger className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 outline-none motion-colors data-[highlighted]:bg-accent data-[popup-open]:bg-accent">
                             <ListFilter className="size-3.5 text-muted-foreground" />
-                            <span>Filter by agent</span>
+                            <span>按智能体筛选</span>
                             <ChevronRight className="ml-auto size-3.5 text-muted-foreground" />
                           </Menu.SubmenuTrigger>
                           <Menu.Portal container={drawerRef}>
@@ -532,7 +533,7 @@ function AgentSessionList({
                                 >
                                   <RadioMenuItem
                                     value="all"
-                                    label="All agents"
+                                    label="所有智能体"
                                   />
                                   {providers.map((provider) => (
                                     <RadioMenuItem
@@ -560,7 +561,7 @@ function AgentSessionList({
                           className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 outline-none motion-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
                         >
                           <CheckCheck className="size-3.5 text-muted-foreground" />
-                          <span>Mark all as read</span>
+                          <span>全部标为已读</span>
                         </Menu.Item>
                       )}
                       {grouping === "workspace" && (
@@ -569,7 +570,7 @@ function AgentSessionList({
                           className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 outline-none motion-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
                         >
                           <GripVertical className="size-3.5 text-muted-foreground" />
-                          <span>Organize workspaces</span>
+                          <span>整理工作区</span>
                         </Menu.Item>
                       )}
                       <Menu.Item
@@ -583,7 +584,7 @@ function AgentSessionList({
                         className="flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 outline-none motion-colors data-[highlighted]:bg-accent data-[highlighted]:text-accent-foreground"
                       >
                         <FolderPlus className="size-3.5 text-muted-foreground" />
-                        <span>Add workspace…</span>
+                        <span>添加工作区…</span>
                       </Menu.Item>
                       <Menu.Item
                         disabled={refresh.isPending}
@@ -597,7 +598,7 @@ function AgentSessionList({
                               "animate-spin motion-reduce:animate-none",
                           )}
                         />
-                        <span>Refresh sessions</span>
+                        <span>刷新会话</span>
                       </Menu.Item>
                     </Menu.Popup>
                   </Menu.Positioner>
@@ -607,7 +608,7 @@ function AgentSessionList({
           )
         }
       >
-        {grouping === "workspace" ? "Workspaces" : "Sessions"}
+        {grouping === "workspace" ? "工作区" : "会话"}
       </AgentListLabel>
       {grouping === "workspace" ? (
         <SidebarAgentWorkspaces

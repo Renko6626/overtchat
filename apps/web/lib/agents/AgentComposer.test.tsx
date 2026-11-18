@@ -102,7 +102,7 @@ it("appends terminal output once without replacing the current draft or sending 
 
 it("stops playback before starting the microphone", async () => {
   await render();
-  await act(async () => button("Dictate").click());
+  await act(async () => button("语音输入").click());
   expect(mocks.beforeStart).toHaveBeenCalledTimes(1);
   expect(mocks.start).toHaveBeenCalledTimes(1);
   expect(mocks.beforeStart.mock.invocationCallOrder[0]).toBeLessThan(mocks.start.mock.invocationCallOrder[0]);
@@ -112,8 +112,8 @@ it("keeps the recording stop control available when agent input becomes disabled
   mocks.status = "recording";
   await render();
   await render({ disabled: true });
-  expect(button("Stop dictation").disabled).toBe(false);
-  await act(async () => button("Stop dictation").click());
+  expect(button("停止语音输入").disabled).toBe(false);
+  await act(async () => button("停止语音输入").click());
   expect(mocks.stop).toHaveBeenCalledTimes(1);
 });
 

@@ -8,7 +8,7 @@ import { MAX_TABLE_ROWS, parseDelimited } from "@/lib/chat/file-preview";
 export function DelimitedTable({ text, delimiter }: { text: string; delimiter: string }) {
   const rows = useMemo(() => parseDelimited(text, delimiter), [text, delimiter]);
   if (!rows.length) {
-    return <p className="p-6 text-sm text-muted-foreground">This file is empty.</p>;
+    return <p className="p-6 text-sm text-muted-foreground">此文件为空。</p>;
   }
   const [header, ...body] = rows;
   const shown = body.slice(0, MAX_TABLE_ROWS);
@@ -39,7 +39,7 @@ export function DelimitedTable({ text, delimiter }: { text: string; delimiter: s
       </table>
       {body.length > shown.length && (
         <p className="px-3 py-2 text-xs text-muted-foreground">
-          Showing the first {MAX_TABLE_ROWS.toLocaleString()} of {body.length.toLocaleString()} rows.
+          仅显示前 {MAX_TABLE_ROWS.toLocaleString("zh-CN")} 行，共 {body.length.toLocaleString("zh-CN")} 行。
         </p>
       )}
     </div>
@@ -50,7 +50,7 @@ export function DelimitedTable({ text, delimiter }: { text: string; delimiter: s
 export function HtmlFilePreview({ name, html }: { name: string; html: string }) {
   return (
     <iframe
-      title={`${name} preview`}
+      title={`${name} 预览`}
       sandbox="allow-scripts"
       referrerPolicy="no-referrer"
       srcDoc={htmlPreviewDocument(html)}

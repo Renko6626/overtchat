@@ -70,11 +70,11 @@ async function record(response: Response) {
 }
 
 it.each([
-  [503, { error: "stt_unavailable", role: "admin" }, "temporarily unavailable"],
-  [502, { code: "speech_unreachable" }, "Couldn't reach"],
-  [503, { code: "speech_disabled" }, "turned off"],
-  [503, { code: "speech_not_configured" }, "hasn't been set up"],
-  [401, { error: "Unauthorized" }, "Sign in to continue"],
+  [503, { error: "stt_unavailable", role: "admin" }, "暂时不可用"],
+  [502, { code: "speech_unreachable" }, "无法连接"],
+  [503, { code: "speech_disabled" }, "关闭"],
+  [503, { code: "speech_not_configured" }, "尚未"],
+  [401, { error: "Unauthorized" }, "请登录以继续"],
 ])(
   "renders HTTP %s according to explicit reason, not status alone",
   async (status, body, message) => {
@@ -97,7 +97,7 @@ it("does not display an HTML proxy error", async () => {
     new Response("<html>Bad gateway: private endpoint</html>", { status: 502 }),
   );
   expect(dictationErrorMessage(dictation.error!, true)).toContain(
-    "temporarily unavailable",
+    "暂时不可用",
   );
 });
 
@@ -105,7 +105,7 @@ it("distinguishes malformed success from an empty transcript", async () => {
   await record(Response.json({ text: 123 }));
   expect(dictation.error?.kind).toBe("other");
   expect(dictationErrorMessage(dictation.error!, true)).toContain(
-    "invalid response",
+    "无效响应",
   );
   await record(Response.json({ text: " " }));
   expect(dictation.error?.kind).toBe("empty");

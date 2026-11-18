@@ -72,7 +72,7 @@ export function MessageTime({
     <time
       data-slot="message-time"
       dateTime={date.toISOString()}
-      title={date.toLocaleString(undefined, {
+      title={date.toLocaleString("zh-CN", {
         dateStyle: "medium",
         timeStyle: "short",
       })}

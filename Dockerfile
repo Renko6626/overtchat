@@ -5,7 +5,8 @@ RUN corepack enable \
  && corepack prepare npm@10.9.8 --activate
 
 FROM base AS deps
-RUN apt-get update \
+RUN if [ -n "$HTTP_PROXY" ]; then export http_proxy="$HTTP_PROXY" https_proxy="$HTTPS_PROXY" no_proxy="$NO_PROXY"; fi \
+ && apt-get update \
  && apt-get install -y --no-install-recommends python3 make g++ \
  && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
@@ -26,13 +27,16 @@ RUN DATABASE_URL=:memory: \
 FROM base AS runner
 ARG TARGETARCH
 ARG MIHOMO_VERSION=v1.19.34
-RUN apt-get update \
+RUN if [ -n "$HTTP_PROXY" ]; then export http_proxy="$HTTP_PROXY" https_proxy="$HTTPS_PROXY" no_proxy="$NO_PROXY"; fi \
+ && apt-get update \
  && apt-get install -y --no-install-recommends ca-certificates curl \
  && rm -rf /var/lib/apt/lists/* \
  && curl -fsSL "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-${TARGETARCH}-${MIHOMO_VERSION}.gz" -o /tmp/mihomo.gz \
  && gzip -d /tmp/mihomo.gz \
  && install -m 0755 /tmp/mihomo /usr/local/bin/mihomo \
- && rm /tmp/mihomo
+ && rm /tmp/mihomo \
+ && mkdir -p /app/geodata \
+ && curl -fsSL "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb" -o /app/geodata/country.mmdb
 RUN groupadd --system --gid 1001 nodejs \
  && useradd --system --create-home --home-dir /home/nextjs --uid 1001 --gid nodejs nextjs
 

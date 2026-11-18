@@ -6,7 +6,12 @@ PROXY_PORT="${PROXY_PORT:-7890}"
 proxy_pid=""
 
 if [ -f "$PROXY_CONFIG" ]; then
-  mihomo -d "$(dirname "$PROXY_CONFIG")" -f "$PROXY_CONFIG" &
+  config_dir="$(dirname "$PROXY_CONFIG")"
+  for f in /app/geodata/*; do
+    [ -e "$f" ] || continue
+    [ -e "$config_dir/$(basename "$f")" ] || cp "$f" "$config_dir/" 2>/dev/null || true
+  done
+  mihomo -d "$config_dir" -f "$PROXY_CONFIG" &
   proxy_pid=$!
   for _ in $(seq 1 50); do
     kill -0 "$proxy_pid" 2>/dev/null || break

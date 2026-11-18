@@ -36,7 +36,7 @@ RUN if [ -n "$HTTP_PROXY" ]; then export http_proxy="$HTTP_PROXY" https_proxy="$
  && install -m 0755 /tmp/mihomo /usr/local/bin/mihomo \
  && rm /tmp/mihomo \
  && mkdir -p /app/geodata \
- && curl -fsSL "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb" -o /app/geodata/country.mmdb
+ && curl -fsSL "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.metadb" -o /app/geodata/geoip.metadb
 RUN groupadd --system --gid 1001 nodejs \
  && useradd --system --create-home --home-dir /home/nextjs --uid 1001 --gid nodejs nextjs
 

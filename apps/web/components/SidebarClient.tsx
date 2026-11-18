@@ -263,12 +263,17 @@ export function SidebarClient({ isAdmin }: { isAdmin: boolean }) {
 
 /** Admins switch between chats and agents; agent state shows in both. */
 function AdminSidebarBody({ chat }: { chat: React.ReactNode }) {
+  const { data: capabilities } = usePublicCapabilities();
+  const agentsEnabled = capabilities?.capabilities.agents === true;
   const mode = useSidebarMode();
   const { data: connections = [], isPending } = useAgentConnections();
   const agentCounts = useMemo(
     () => agentAttentionCounts(connections),
     [connections],
   );
+  if (!agentsEnabled) {
+    return <div className="flex-1 overflow-y-auto px-2 pb-2">{chat}</div>;
+  }
   return (
     <>
       <SidebarModeToggle mode={mode} agentCounts={agentCounts} />

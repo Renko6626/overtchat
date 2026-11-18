@@ -8,6 +8,7 @@ interface PublicCapabilitiesResponse {
   capabilities: {
     chatPinning?: boolean;
     chatMarkdownExport?: boolean;
+    agents?: boolean;
     voice: VoiceCapability;
     images: ImageCapability;
     [key: string]: unknown;

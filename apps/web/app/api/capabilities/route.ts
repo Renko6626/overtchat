@@ -1,5 +1,8 @@
 import { auth } from "@/lib/auth/server";
-import { listServerCapabilities } from "@/lib/db/serverCapabilities";
+import {
+  isServerCapabilityInstalled,
+  listServerCapabilities,
+} from "@/lib/db/serverCapabilities";
 import { getImageCapability } from "@/lib/images/capability";
 import { getCodeExecutionCapability } from "@/lib/sandbox/client";
 import { getVoiceCapability } from "@/lib/voice/capability";
@@ -22,6 +25,7 @@ export async function GET(request: Request) {
       ),
       chatPinning: true,
       chatMarkdownExport: true,
+      agents: isServerCapabilityInstalled("agents"),
       images: getImageCapability(),
       voice: getVoiceCapability(),
       codeExecution: await getCodeExecutionCapability(),

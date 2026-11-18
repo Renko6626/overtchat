@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({
   getSession: vi.fn(),
   listCapabilities: vi.fn(),
+  agentsInstalled: vi.fn(),
   imageModel: vi.fn(),
   getVoiceCapability: vi.fn(),
   getCodeExecutionCapability: vi.fn(),
@@ -14,6 +15,7 @@ vi.mock("@/lib/auth/server", () => ({
 }));
 vi.mock("@/lib/db/serverCapabilities", () => ({
   listServerCapabilities: mocks.listCapabilities,
+  isServerCapabilityInstalled: mocks.agentsInstalled,
 }));
 vi.mock("@/lib/db/modelConfigs", () => ({ getImageModelConfig: mocks.imageModel }));
 vi.mock("@/lib/voice/capability", () => ({
@@ -38,6 +40,7 @@ describe("public capabilities", () => {
     vi.resetAllMocks();
     mocks.getSession.mockResolvedValue({ user: { id: "user" } });
     mocks.listCapabilities.mockReturnValue(configuredCapabilities);
+    mocks.agentsInstalled.mockReturnValue(false);
     mocks.getVoiceCapability.mockReturnValue({
       available: true,
       installed: true,
@@ -75,6 +78,16 @@ describe("public capabilities", () => {
   it("advertises chat pinning to bundled clients", async () => {
     await expect((await GET(request)).json()).resolves.toMatchObject({
       capabilities: { chatPinning: true },
+    });
+  });
+
+  it("reports agents only when the capability is installed", async () => {
+    await expect((await GET(request)).json()).resolves.toMatchObject({
+      capabilities: { agents: false },
+    });
+    mocks.agentsInstalled.mockReturnValue(true);
+    await expect((await GET(request)).json()).resolves.toMatchObject({
+      capabilities: { agents: true },
     });
   });
 

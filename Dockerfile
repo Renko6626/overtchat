@@ -26,6 +26,15 @@ RUN DATABASE_URL=:memory: \
     npm run build -w apps/web
 
 FROM base AS runner
+ARG TARGETARCH
+ARG MIHOMO_VERSION=v1.19.34
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends ca-certificates curl \
+ && rm -rf /var/lib/apt/lists/* \
+ && curl -fsSL "https://github.com/MetaCubeX/mihomo/releases/download/${MIHOMO_VERSION}/mihomo-linux-${TARGETARCH}-${MIHOMO_VERSION}.gz" -o /tmp/mihomo.gz \
+ && gzip -d /tmp/mihomo.gz \
+ && install -m 0755 /tmp/mihomo /usr/local/bin/mihomo \
+ && rm /tmp/mihomo
 RUN groupadd --system --gid 1001 nodejs \
  && useradd --system --create-home --home-dir /home/nextjs --uid 1001 --gid nodejs nextjs
 
@@ -33,14 +42,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/.next/static ./apps/web/.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 COPY --from=builder --chown=nextjs:nodejs /app/apps/web/drizzle ./apps/web/drizzle
+COPY --chown=nextjs:nodejs docker-entrypoint.sh ./docker-entrypoint.sh
 
 RUN test -f /app/apps/web/public/voice/mic-capture.js \
  && test -f /app/apps/web/public/voice/audio-playback.js \
- && mkdir -p /app/data /app/npm-cache \
+ && chmod 0755 /app/docker-entrypoint.sh \
+ && mkdir -p /app/data/proxy /app/npm-cache \
  && chown -R nextjs:nodejs /app/data /app/npm-cache
 
 USER nextjs
 ENV HOSTNAME=0.0.0.0 PORT=4717 DATABASE_URL=/app/data/chat.db MIGRATIONS_FOLDER=/app/apps/web/drizzle NPM_CONFIG_CACHE=/app/npm-cache
 EXPOSE 4717
 
-CMD ["node", "apps/web/server.js"]
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

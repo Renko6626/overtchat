@@ -1,0 +1,25 @@
+# Copy to /app/data/proxy/config.yaml inside the persistent volume, fill in
+# your nodes or paste your subscription config (keep the rules block), then
+# restart the container. Only OpenAI traffic goes through the proxy node;
+# everything else connects directly.
+mixed-port: 7890
+bind-address: 127.0.0.1
+allow-lan: false
+mode: rule
+log-level: warning
+geodata-mode: false
+geo-auto-update: false
+
+proxies: [] # paste your nodes here
+
+proxy-groups:
+  - name: PROXY
+    type: select
+    proxies:
+      - DIRECT # replace with your node names
+
+rules:
+  - DOMAIN-SUFFIX,openai.com,PROXY
+  - DOMAIN-SUFFIX,oaistatic.com,PROXY
+  - DOMAIN-SUFFIX,oaiusercontent.com,PROXY
+  - MATCH,DIRECT

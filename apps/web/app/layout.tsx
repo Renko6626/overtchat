@@ -92,7 +92,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="zh-CN"
       className={`${sans.variable} ${serif.variable} ${mono.variable} ${inter.variable} ${roboto.variable} ${geist.variable} ${ibmPlexSans.variable} h-full antialiased`}
       suppressHydrationWarning
     >

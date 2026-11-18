@@ -24,8 +24,13 @@ export async function PUT(
   if (!CAPABILITY_IDS.includes(id as CapabilityId)) {
     return new Response("Not found", { status: 404 });
   }
+  const body = (await request.json().catch(() => null)) as Record<
+    string,
+    unknown
+  > | null;
+  if (body && body.baseUrl === "") body.baseUrl = null;
   const parsed = serverCapabilityInputSchema.safeParse({
-    ...(await request.json().catch(() => null)),
+    ...body,
     id,
   });
   if (!parsed.success) {

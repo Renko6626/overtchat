@@ -266,8 +266,17 @@ function CapabilitySection({
         </Select>
       </SettingsRow>
 
-      {needsBaseUrl(draft) && (
-        <SettingsRow title="API base URL" htmlFor={`${draft.id}-base-url`}>
+      {(needsBaseUrl(draft) ||
+        (draft.id === "search" && draft.provider === "deepseek")) && (
+        <SettingsRow
+          title="API base URL"
+          description={
+            draft.provider === "deepseek"
+              ? "Optional. Leave blank for https://api.deepseek.com."
+              : undefined
+          }
+          htmlFor={`${draft.id}-base-url`}
+        >
           <Input
             id={`${draft.id}-base-url`}
             value={draft.baseUrl ?? ""}
@@ -278,9 +287,11 @@ function CapabilitySection({
               }))
             }
             placeholder={
-              draft.id === "search"
-                ? "http://host.docker.internal:8088"
-                : "https://api.openai.com/v1"
+              draft.provider === "deepseek"
+                ? "https://api.deepseek.com"
+                : draft.id === "search"
+                  ? "http://host.docker.internal:8088"
+                  : "https://api.openai.com/v1"
             }
           />
         </SettingsRow>

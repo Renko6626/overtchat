@@ -159,4 +159,25 @@ describe("server capability update", () => {
     });
     expect(mocks.updateCapability).not.toHaveBeenCalled();
   });
+
+  it("treats a blank DeepSeek base URL as the default", async () => {
+    const response = await PUT(
+      request({
+        ...searchInput,
+        provider: "deepseek",
+        apiKey: "ds-key",
+        baseUrl: "",
+      }),
+      { params: Promise.resolve({ id: "search" }) },
+    );
+
+    expect(response.status).toBe(200);
+    expect(mocks.updateCapability).toHaveBeenCalledWith({
+      ...searchInput,
+      provider: "deepseek",
+      id: "search",
+      apiKey: "ds-key",
+      baseUrl: null,
+    });
+  });
 });

@@ -67,7 +67,6 @@ import {
   withSubmittedOpenUIAction,
 } from "@/lib/openui/actions";
 import { currentDateSystemPrompt } from "@/lib/chat/current-date";
-import { replyLanguageSystemPrompt } from "@/lib/chat/reply-language";
 import {
   assertChatAttachments,
   rejectAttachmentDownloads,
@@ -647,7 +646,6 @@ export async function runChat(
   const webToolsEnabled =
     toolCallingEnabled && webSearchEnabled && webSearchAvailable;
   const systemParts = [
-    replyLanguageSystemPrompt(),
     modelConfig.systemPrompt,
     activePersonalization
       ? userProfileSystemPrompt(activePersonalization.personalization)

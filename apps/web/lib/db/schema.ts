@@ -583,6 +583,7 @@ export const generationUsage = sqliteTable(
     costSource: text("cost_source", {
       enum: ["models.dev", "model_config", "provider"],
     }),
+    ownKey: integer("own_key", { mode: "boolean" }).notNull().default(false),
     inputCostNanoUsd: integer("input_cost_nano_usd"),
     outputCostNanoUsd: integer("output_cost_nano_usd"),
     cacheReadCostNanoUsd: integer("cache_read_cost_nano_usd"),
@@ -610,6 +611,23 @@ export const generationUsage = sqliteTable(
   ],
 );
 
+export const quotaSettings = sqliteTable("quota_settings", {
+  id: integer("id").primaryKey(),
+  defaultMonthlyLimitNanoUsd: integer("default_monthly_limit_nano_usd"),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+
+export const userQuotas = sqliteTable("user_quotas", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => user.id, { onDelete: "cascade" }),
+  mode: text("mode", { enum: ["inherit", "unlimited", "limit"] })
+    .notNull()
+    .default("inherit"),
+  monthlyLimitNanoUsd: integer("monthly_limit_nano_usd"),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" }).notNull(),
+});
+
 export const userRelations = relations(user, ({ one, many }) => ({
   sessions: many(session),
   accounts: many(account),
@@ -621,6 +639,7 @@ export const userRelations = relations(user, ({ one, many }) => ({
   generationUsage: many(generationUsage),
   memories: many(memories),
   personalization: one(userPersonalization),
+  quota: one(userQuotas),
 }));
 
 export const userPersonalizationRelations = relations(

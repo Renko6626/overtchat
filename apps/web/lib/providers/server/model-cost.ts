@@ -57,6 +57,23 @@ export function estimateGenerationCost({
   }
 }
 
+export function hasGenerationPricing(
+  providerId: ProviderId,
+  model: string,
+  pricing?: ModelPricing | null,
+): boolean {
+  const rates =
+    pricing === null || pricing === undefined
+      ? catalogRatesFor(providerId, model, {
+          input: 0,
+          output: 0,
+          cacheRead: 0,
+          cacheWrite: 0,
+        })
+      : configuredPricingRates(pricing);
+  return rates !== null;
+}
+
 function estimateGenerationCostUnchecked({
   providerId,
   model,

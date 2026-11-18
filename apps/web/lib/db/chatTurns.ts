@@ -22,6 +22,7 @@ export type CompletedGenerationUsage = {
   cacheWriteTokens?: number;
   totalTokens?: number;
   finishReason?: string;
+  ownKey?: boolean;
 } & Partial<EstimatedGenerationCost>;
 
 /** One image tool operation, billed to the image model rather than the chat model. */

@@ -10,8 +10,30 @@ vi.mock("@/lib/providers/server/model-catalog.json", () =>
 import {
   estimateGenerationCost,
   estimateImageGenerationCost,
+  hasGenerationPricing,
   sumEstimatedGenerationCosts,
 } from "./model-cost";
+
+describe("hasGenerationPricing", () => {
+  it("detects catalog pricing", () => {
+    expect(hasGenerationPricing("openai", "gpt-5.5")).toBe(true);
+  });
+
+  it("reports missing pricing for unknown models", () => {
+    expect(hasGenerationPricing("openai", "no-such-model")).toBe(false);
+  });
+
+  it("honors configured pricing for unknown models", () => {
+    expect(
+      hasGenerationPricing("openai", "no-such-model", {
+        input: 1,
+        output: 2,
+        cacheRead: 0.1,
+        cacheWrite: 1,
+      }),
+    ).toBe(true);
+  });
+});
 
 function usage({
   input,

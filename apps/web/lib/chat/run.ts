@@ -125,7 +125,12 @@ import {
   codeExecutionPrompt,
   createCodeExecutionTools,
 } from "@/lib/sandbox/tools";
-import { getModelConfig, modelConfigForUser } from "@/lib/db/modelConfigs";
+import {
+  getModelConfig,
+  getModelUserCredential,
+  modelConfigForUser,
+} from "@/lib/db/modelConfigs";
+import { checkUserQuota, NANO_USD_PER_USD } from "@/lib/db/userQuotas";
 import { getProject } from "@/lib/db/projects";
 import { listProjectChatFiles } from "@/lib/db/project-files";
 import { getActivePersonalization } from "@/lib/db/personalization";
@@ -158,6 +163,7 @@ import {
 import { isProviderConfigurationError } from "@/lib/providers/server/errors";
 import {
   estimateGenerationCost,
+  hasGenerationPricing,
   sumEstimatedGenerationCosts,
   type EstimatedGenerationCost,
 } from "@/lib/providers/server/model-cost";
@@ -233,6 +239,39 @@ export async function runChat(
     storedModelConfig && modelConfigForUser(storedModelConfig, userId);
   if (!modelConfig || modelConfig.modelType === "image" || !modelConfig.enabled) {
     return new Response("Model config not found", { status: 404 });
+  }
+
+  const usesOwnKey =
+    modelConfig.credentialScope === "user" &&
+    Boolean(getModelUserCredential(modelConfig.id, userId)?.apiKey);
+  if (principal.role !== "admin" && !usesOwnKey) {
+    const quota = checkUserQuota(userId);
+    if (quota.limitNanoUsd !== null) {
+      if (temporary) {
+        throw new ChatRequestError(
+          "Temporary chats are disabled while a monthly quota is in effect. Use a saved chat instead.",
+          403,
+        );
+      }
+      if (
+        !hasGenerationPricing(
+          modelConfig.providerId,
+          modelConfig.model,
+          modelConfig.pricing,
+        )
+      ) {
+        throw new ChatRequestError(
+          "This model has no pricing data, so it cannot be used under a monthly quota. Ask an administrator to set pricing or raise your quota.",
+          403,
+        );
+      }
+    }
+    if (quota.exceeded) {
+      throw new ChatRequestError(
+        `Monthly quota reached: $${(quota.spentNanoUsd / NANO_USD_PER_USD).toFixed(2)} spent of $${((quota.limitNanoUsd ?? 0) / NANO_USD_PER_USD).toFixed(2)} this month. Ask an administrator to raise your quota.`,
+        403,
+      );
+    }
   }
 
   const existingChat = temporary ? null : await getChat(chatId, userId);
@@ -1088,6 +1127,7 @@ export async function runChat(
             ),
             totalTokens: sum((usage) => usage.totalTokens),
             finishReason: part.finishReason,
+            ownKey: usesOwnKey,
             ...(estimatedCost ?? {}),
           };
         } else {

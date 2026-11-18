@@ -1,0 +1,1 @@
+ALTER TABLE `generation_usage` ADD `own_key` integer DEFAULT false NOT NULL;

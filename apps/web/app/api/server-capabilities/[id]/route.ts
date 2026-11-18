@@ -44,10 +44,18 @@ export async function PUT(
       { status: 409 },
     );
   }
-  const apiKey = parsed.data.apiKey || current.apiKey;
+  const apiKey =
+    parsed.data.apiKey ||
+    (parsed.data.provider === current.provider ? current.apiKey : null);
   if (parsed.data.provider === "brave" && !apiKey) {
     return Response.json(
       { error: "Enter a Brave Search API key." },
+      { status: 400 },
+    );
+  }
+  if (parsed.data.provider === "deepseek" && !apiKey) {
+    return Response.json(
+      { error: "Enter a DeepSeek API key." },
       { status: 400 },
     );
   }

@@ -119,6 +119,144 @@ describe("configured web search provider", () => {
     );
   });
 
+  it("uses DeepSeek Search with the stored API key", async () => {
+    mocks.getCapability.mockReturnValue({
+      provider: "deepseek",
+      apiKey: "deepseek-key",
+      baseUrl: null,
+    });
+    const fetchMock = vi.fn().mockResolvedValue(
+      Response.json({
+        results: [
+          {
+            title: "DeepSeek result",
+            url: "https://example.com/deepseek",
+            snippet: "Short snippet",
+            summary: "Long summary written for the model",
+            date: "2026-11-13T00:00:00+00:00",
+          },
+        ],
+      }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+
+    await expect(searchWeb("deepseek query", 3)).resolves.toEqual({
+      provider: "deepseek",
+      sources: [
+        {
+          title: "DeepSeek result",
+          url: "https://example.com/deepseek",
+          snippet: "Long summary written for the model",
+          publishedDate: "2026-11-13T00:00:00+00:00",
+        },
+      ],
+      searchQueries: ["deepseek query"],
+      usage: { searchRequests: 1 },
+    });
+
+    const [rawUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(rawUrl).toBe("https://api.deepseek.com/v1/tools/search");
+    expect(init.method).toBe("POST");
+    expect(init.headers).toMatchObject({
+      Authorization: "Bearer deepseek-key",
+      "Content-Type": "application/json",
+    });
+    expect(JSON.parse(String(init.body))).toEqual({
+      query: "deepseek query",
+      count: 3,
+    });
+  });
+
+  it("honors a custom DeepSeek base URL and truncates long queries", async () => {
+    mocks.getCapability.mockReturnValue({
+      provider: "deepseek",
+      apiKey: "deepseek-key",
+      baseUrl: "https://proxy.example.com/",
+    });
+    const fetchMock = vi
+      .fn()
+      .mockResolvedValue(Response.json({ results: [] }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    const longQuery = "a".repeat(200);
+    await expect(searchWeb(longQuery)).resolves.toMatchObject({
+      provider: "deepseek",
+      sources: [],
+      usage: { searchRequests: 0 },
+    });
+
+    const [rawUrl, init] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(rawUrl).toBe("https://proxy.example.com/v1/tools/search");
+    expect(JSON.parse(String(init.body)).query).toHaveLength(128);
+  });
+
+  it("fails clearly when DeepSeek has no API key", async () => {
+    mocks.getCapability.mockReturnValue({
+      provider: "deepseek",
+      apiKey: null,
+    });
+    await expect(searchWeb("query")).rejects.toThrow(
+      "DeepSeek Search API key is not configured",
+    );
+  });
+
+  it("rejects a plaintext DeepSeek base URL off loopback", async () => {
+    mocks.getCapability.mockReturnValue({
+      provider: "deepseek",
+      apiKey: "deepseek-key",
+      baseUrl: "http://proxy.example.com",
+    });
+    await expect(searchWeb("query")).rejects.toThrow(
+      "DeepSeek search base URL must use https",
+    );
+  });
+
+  it("caps DeepSeek results at the requested limit", async () => {
+    mocks.getCapability.mockReturnValue({
+      provider: "deepseek",
+      apiKey: "deepseek-key",
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        Response.json({
+          results: Array.from({ length: 8 }, (_, index) => ({
+            title: `Result ${index}`,
+            url: `https://example.com/${index}`,
+            summary: "Summary",
+          })),
+        }),
+      ),
+    );
+    const output = await searchWeb("query", 3);
+    expect(output.sources).toHaveLength(3);
+  });
+
+  it("surfaces DeepSeek API errors with the provider message", async () => {
+    mocks.getCapability.mockReturnValue({
+      provider: "deepseek",
+      apiKey: "expired-key",
+    });
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue(
+        Response.json(
+          {
+            error: {
+              message: "Authentication Fails, Your api key: **** is invalid",
+              type: "authentication_error",
+            },
+          },
+          { status: 401 },
+        ),
+      ),
+    );
+
+    await expect(searchWeb("query")).rejects.toThrow(
+      "DeepSeek search failed (401): Authentication Fails, Your api key: **** is invalid",
+    );
+  });
+
   it("falls back from Brave to configured SearXNG", async () => {
     mocks.getCapability.mockReturnValue({
       provider: "brave",

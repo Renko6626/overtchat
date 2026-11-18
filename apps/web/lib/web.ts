@@ -9,6 +9,7 @@ import {
 } from "@yoloyash/web-basics";
 import { getServerCapability } from "@/lib/db/serverCapabilities";
 import type { FetchedPage, WebSearchOutput } from "./web-client";
+import { deepSeekSearchWeb } from "./web-deepseek";
 
 export type { FetchedPage, WebSearchOutput, WebSearchResult } from "./web-client";
 export { cleanDomain, faviconUrl } from "./web-client";
@@ -22,6 +23,8 @@ export type FetchedWebResource = FetchedWebPage | FetchImageResult;
 type SearchConfiguration = {
   braveApiKey?: string;
   searxngUrl?: string;
+  deepseekApiKey?: string;
+  deepseekBaseUrl?: string | null;
 };
 
 let activeSearchClient:
@@ -58,6 +61,15 @@ function configuredSearch(): SearchConfiguration {
       searxngUrl: baseUrl,
     };
   }
+  if (capability.provider === "deepseek") {
+    if (!capability.apiKey) {
+      throw new Error("The DeepSeek Search API key is not configured.");
+    }
+    return {
+      deepseekApiKey: capability.apiKey,
+      deepseekBaseUrl: capability.baseUrl,
+    };
+  }
   throw new Error("The configured web search provider is not supported.");
 }
 
@@ -67,7 +79,9 @@ function sameSearchConfiguration(
 ): boolean {
   return (
     left.braveApiKey === right.braveApiKey &&
-    left.searxngUrl === right.searxngUrl
+    left.searxngUrl === right.searxngUrl &&
+    left.deepseekApiKey === right.deepseekApiKey &&
+    left.deepseekBaseUrl === right.deepseekBaseUrl
   );
 }
 
@@ -96,6 +110,18 @@ export async function searchWeb(
   limit = 5,
   signal?: AbortSignal,
 ): Promise<WebSearchOutput> {
+  const configuration = configuredSearch();
+  if (configuration.deepseekApiKey) {
+    return deepSeekSearchWeb(
+      query,
+      limit,
+      {
+        apiKey: configuration.deepseekApiKey,
+        baseUrl: configuration.deepseekBaseUrl,
+      },
+      signal,
+    );
+  }
   return configuredSearchClient().webSearch({
     query,
     limit,

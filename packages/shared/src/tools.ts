@@ -16,6 +16,7 @@ export interface WebSearchResult {
 
 export type WebSearchProvider =
   | "brave"
+  | "deepseek"
   | "duckduckgo"
   | "exa"
   | "firecrawl"
@@ -24,6 +25,7 @@ export type WebSearchProvider =
 
 const WEB_SEARCH_PROVIDER_LABELS: Record<WebSearchProvider, string> = {
   brave: "Brave",
+  deepseek: "DeepSeek",
   duckduckgo: "DuckDuckGo",
   exa: "Exa",
   firecrawl: "Firecrawl",

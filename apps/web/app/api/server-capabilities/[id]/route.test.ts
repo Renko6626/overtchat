@@ -113,4 +113,50 @@ describe("server capability update", () => {
       error: "Enter a Brave Search API key.",
     });
   });
+
+  it("requires a DeepSeek API key when none is stored", async () => {
+    mocks.getCapability.mockReturnValue({
+      id: "search",
+      bundledInstalled: false,
+      apiKey: null,
+    });
+
+    const response = await PUT(
+      request({ ...searchInput, provider: "deepseek" }),
+      { params: Promise.resolve({ id: "search" }) },
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "Enter a DeepSeek API key.",
+    });
+  });
+
+  it("accepts DeepSeek search without a base URL", async () => {
+    const response = await PUT(
+      request({ ...searchInput, provider: "deepseek", apiKey: "ds-key" }),
+      { params: Promise.resolve({ id: "search" }) },
+    );
+
+    expect(response.status).toBe(200);
+    expect(mocks.updateCapability).toHaveBeenCalledWith({
+      ...searchInput,
+      provider: "deepseek",
+      id: "search",
+      apiKey: "ds-key",
+    });
+  });
+
+  it("does not reuse the stored key when switching search provider", async () => {
+    const response = await PUT(
+      request({ ...searchInput, provider: "deepseek" }),
+      { params: Promise.resolve({ id: "search" }) },
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "Enter a DeepSeek API key.",
+    });
+    expect(mocks.updateCapability).not.toHaveBeenCalled();
+  });
 });

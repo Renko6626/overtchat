@@ -46,17 +46,27 @@ function environmentDefault(id: CapabilityId): ServerCapabilityInput {
       process.env.SEARXNG_URL !== "http://searxng:8080"
         ? "searxng"
         : "bundled");
+    const resolved =
+      provider === "brave" ||
+      provider === "deepseek" ||
+      provider === "searxng" ||
+      provider === "disabled"
+        ? provider
+        : "bundled";
     return {
       id,
-      provider:
-        provider === "brave" ||
-        provider === "searxng" ||
-        provider === "disabled"
-          ? provider
-          : "bundled",
+      provider: resolved,
       bundledInstalled: installed.has("search"),
-      baseUrl: nullable(process.env.SEARXNG_URL),
-      apiKey: nullable(process.env.BRAVE_SEARCH_API_KEY),
+      baseUrl: nullable(
+        resolved === "deepseek"
+          ? process.env.DEEPSEEK_SEARCH_BASE_URL
+          : process.env.SEARXNG_URL,
+      ),
+      apiKey: nullable(
+        resolved === "deepseek"
+          ? (process.env.DEEPSEEK_SEARCH_API_KEY ?? process.env.DEEPSEEK_API_KEY)
+          : process.env.BRAVE_SEARCH_API_KEY,
+      ),
       model: null,
       voice: null,
     };

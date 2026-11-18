@@ -54,6 +54,7 @@ const PROVIDERS: Record<AdminServerCapability["id"], ProviderOption[]> = {
   search: [
     { value: "bundled", label: "Bundled SearXNG", bundled: true },
     { value: "brave", label: "Brave Search API" },
+    { value: "deepseek", label: "DeepSeek Search API" },
     { value: "searxng", label: "Existing SearXNG" },
     { value: "disabled", label: "Disabled" },
   ],
@@ -132,6 +133,7 @@ function needsBaseUrl(capability: CapabilityDraft): boolean {
 function needsApiKey(capability: CapabilityDraft): boolean {
   return (
     capability.provider === "brave" ||
+    capability.provider === "deepseek" ||
     capability.provider === "openai-compatible"
   );
 }
@@ -311,16 +313,22 @@ function CapabilitySection({
       {draft.id === "search" && draft.provider !== "disabled" && (
         <SettingsRow
           title="Search order"
-          description="If your primary provider fails, OvertChat tries free search providers."
+          description={
+            draft.provider === "deepseek"
+              ? "Billed per successful search (¥5 per 1,000). No free fallback."
+              : "If your primary provider fails, OvertChat tries free search providers."
+          }
           align="center"
           controlAlign="end"
         >
           <span className="text-xs text-muted-foreground">
-            {draft.provider === "brave"
-              ? draft.bundledInstalled || draft.baseUrl
-                ? "Brave → SearXNG → Firecrawl → Exa → DuckDuckGo"
-                : "Brave → Firecrawl → Exa → DuckDuckGo"
-              : "SearXNG → Firecrawl → Exa → DuckDuckGo"}
+            {draft.provider === "deepseek"
+              ? "DeepSeek Search API"
+              : draft.provider === "brave"
+                ? draft.bundledInstalled || draft.baseUrl
+                  ? "Brave → SearXNG → Firecrawl → Exa → DuckDuckGo"
+                  : "Brave → Firecrawl → Exa → DuckDuckGo"
+                : "SearXNG → Firecrawl → Exa → DuckDuckGo"}
           </span>
         </SettingsRow>
       )}

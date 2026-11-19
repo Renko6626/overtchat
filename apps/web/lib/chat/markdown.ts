@@ -1,9 +1,12 @@
 import { code } from "@streamdown/code";
-import { math } from "@streamdown/math";
+import { createMathPlugin } from "@streamdown/math";
 import { cjk } from "@streamdown/cjk";
 import { defaultRemarkPlugins } from "streamdown";
 import { MermaidBlock } from "@/components/chat/MermaidBlock";
 import { CodePreviewBlock } from "@/components/chat/CodePreviewBlock";
+
+// Upstream defaults to block-only math; models routinely emit `$x$` too.
+const math = createMathPlugin({ singleDollarTextMath: true });
 
 export const STREAMDOWN_PLUGINS = {
   code,

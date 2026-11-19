@@ -65,6 +65,7 @@ import {
   MessageTime,
 } from "./MessageActions";
 import { serverUrl } from "@/lib/api-url";
+import { normalizeLatexDelimiters } from "@/lib/chat/latex";
 
 const REPLY_REMARK_PLUGINS = [
   ...STREAMDOWN_DEFAULT_REMARK_PLUGINS,
@@ -327,7 +328,7 @@ function AssistantBubble({
                     isAnimating={streaming}
                     caret={showCaret ? "block" : undefined}
                   >
-                    {(seg.part as { text: string }).text}
+                    {normalizeLatexDelimiters((seg.part as { text: string }).text)}
                   </Streamdown>
                 </div>
               );

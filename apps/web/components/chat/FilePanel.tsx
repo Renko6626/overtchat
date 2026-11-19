@@ -20,6 +20,7 @@ import { BackToFilesButton } from "./ChatFiles";
 import { DelimitedTable, HtmlFilePreview } from "./FilePreviewBodies";
 import { SidePanel, SidePanelHeader } from "./SidePanel";
 import { SaveToProjectButton } from "@/components/projects/SaveToProjectButton";
+import { normalizeLatexDelimiters } from "@/lib/chat/latex";
 
 type TextPreview = Extract<FilePreview, { kind: "table" | "markdown" | "html" | "text" }>;
 
@@ -208,7 +209,7 @@ function TextFile({
             plugins={MESSAGE_MARKDOWN_PLUGINS}
             mode="static"
           >
-            {text}
+            {normalizeLatexDelimiters(text)}
           </Streamdown>
         </div>
       );

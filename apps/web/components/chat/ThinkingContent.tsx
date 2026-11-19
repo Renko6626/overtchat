@@ -1,6 +1,7 @@
 "use client";
 
 import { Streamdown } from "streamdown";
+import { normalizeLatexDelimiters } from "@/lib/chat/latex";
 import remarkBreaks from "remark-breaks";
 import {
   STREAMDOWN_DEFAULT_REMARK_PLUGINS,
@@ -22,7 +23,7 @@ export function ThinkingContent({ content }: { content: string }) {
       plugins={STREAMDOWN_PLUGINS}
       remarkPlugins={THINKING_REMARK_PLUGINS}
     >
-      {trimmed}
+      {normalizeLatexDelimiters(trimmed)}
     </Streamdown>
   );
 }

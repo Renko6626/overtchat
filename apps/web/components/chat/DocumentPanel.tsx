@@ -40,6 +40,7 @@ import { DOCUMENT_ICONS } from "./DocumentCard";
 import { BackToFilesButton } from "./ChatFiles";
 import { SidePanel, SidePanelHeader } from "./SidePanel";
 import { SaveToProjectButton } from "@/components/projects/SaveToProjectButton";
+import { normalizeLatexDelimiters } from "@/lib/chat/latex";
 
 type ShownDocument = DocumentDraft & { version?: number };
 
@@ -338,7 +339,7 @@ function DocumentBody({
             plugins={MESSAGE_MARKDOWN_PLUGINS}
             mode={writing ? "streaming" : "static"}
           >
-            {document.content}
+            {normalizeLatexDelimiters(document.content)}
           </Streamdown>
         </div>
       );

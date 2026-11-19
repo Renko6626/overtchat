@@ -5,6 +5,7 @@ import { parseHTML } from "linkedom";
 import { Streamdown } from "streamdown";
 import { describe, expect, it } from "vitest";
 import { STREAMDOWN_PLUGINS } from "./markdown";
+import { normalizeLatexDelimiters } from "./latex";
 
 const require = createRequire(import.meta.url);
 const stylesheet = readFileSync(
@@ -44,6 +45,22 @@ describe("chat math rendering", () => {
         ),
       ).toBe(true);
     }
+  });
+
+  it("renders model-style \\(...\\) and \\[...\\] delimiters after normalization", () => {
+    const document = renderMath(
+      normalizeLatexDelimiters(
+        "坐标是 \\(X^\\mu\\)，作用量是 \\[ S = \\frac{1}{2} \\]。",
+      ),
+    );
+    expect(document.querySelectorAll(".katex")).toHaveLength(2);
+    expect(document.querySelector(".katex-error")).toBeNull();
+  });
+
+  it("renders single-dollar inline math", () => {
+    const document = renderMath("结果 $x^2$ 成立。");
+    expect(document.querySelectorAll(".katex")).toHaveLength(1);
+    expect(document.querySelector(".katex-error")).toBeNull();
   });
 
   it("keeps invalid math source and the rest of the message readable", () => {

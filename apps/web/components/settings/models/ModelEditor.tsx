@@ -17,6 +17,11 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/toast";
 import { DEFAULT_MODEL_SYSTEM_PROMPT } from "@/lib/model-config/defaults";
 import {
+  readTextVerbosity,
+  setTextVerbosity,
+  type TextVerbosity,
+} from "@/lib/model-config/response-style";
+import {
   ModelConfigSchema,
   supportsLocalReasoningConfig,
   type AdminModelConfig,
@@ -212,6 +217,17 @@ export function ModelEditor({ modelId }: ModelEditorProps) {
         ? (existing?.catalogPricing ?? undefined)
         : undefined
       : (catalogPricing ?? undefined);
+  const textVerbosity = readTextVerbosity(providerOptionsText);
+
+  function changeVerbosity(next: TextVerbosity | null) {
+    const result = setTextVerbosity(providerOptionsText, next);
+    if (result.error) {
+      setProviderOptionsError(result.error);
+      return;
+    }
+    setProviderOptionsText(result.text);
+    setProviderOptionsError(null);
+  }
 
   const pingArgs = useMemo(() => {
     let parsedOptions: Record<string, unknown> | null = null;
@@ -689,6 +705,10 @@ export function ModelEditor({ modelId }: ModelEditorProps) {
                 setProviderOptionsText(next);
                 setProviderOptionsError(err);
               }}
+              verbosity={textVerbosity}
+              onVerbosityChange={changeVerbosity}
+              showVerbosity={draft.providerId === "openai"}
+              verbosityDisabled={Boolean(providerOptionsError)}
               defaultOpen={advancedDefaultOpen}
             />
           </>

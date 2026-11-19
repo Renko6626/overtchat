@@ -5,8 +5,16 @@ import Editor from "react-simple-code-editor";
 import { ChevronDown, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import type { TextVerbosity } from "@/lib/model-config/response-style";
 import type { CatalogModelPricing } from "@/lib/model-config/schema";
 import { cn } from "@/lib/utils";
 import { SettingsRow, SettingsSection } from "../SettingsRows";
@@ -46,6 +54,13 @@ export interface AdvancedFieldsProps {
     next: string,
     parseError: string | null,
   ) => void;
+  /** Current `textVerbosity` value stored in the provider options. */
+  verbosity: TextVerbosity | null;
+  onVerbosityChange: (next: TextVerbosity | null) => void;
+  /** Only OpenAI Responses models accept `text.verbosity`. */
+  showVerbosity?: boolean;
+  /** Provider options JSON is invalid, so it cannot be rewritten safely. */
+  verbosityDisabled?: boolean;
   /** Open by default when editing a model that already has these fields populated. */
   defaultOpen?: boolean;
 }
@@ -62,6 +77,10 @@ export function AdvancedFields({
   onSystemPromptChange,
   providerOptionsText,
   onProviderOptionsTextChange,
+  verbosity,
+  onVerbosityChange,
+  showVerbosity,
+  verbosityDisabled,
   defaultOpen,
 }: AdvancedFieldsProps) {
   const [open, setOpen] = useState(Boolean(defaultOpen));
@@ -148,6 +167,46 @@ export function AdvancedFields({
               onChange={(e) => onSystemPromptChange(e.target.value)}
             />
           </SettingsRow>
+
+          {showVerbosity ? (
+            <SettingsRow
+              title="Response verbosity"
+              description="OpenAI text verbosity for new replies. Default lets the provider decide (medium); high asks for longer, more detailed answers."
+              htmlFor="p-response-verbosity"
+            >
+              <div className="space-y-1">
+                <Select
+                  value={verbosity ?? "default"}
+                  onValueChange={(value) =>
+                    onVerbosityChange(
+                      value === "default"
+                        ? null
+                        : (value as TextVerbosity),
+                    )
+                  }
+                  disabled={verbosityDisabled}
+                >
+                  <SelectTrigger
+                    id="p-response-verbosity"
+                    className="w-full sm:w-56"
+                  >
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default (medium)</SelectItem>
+                    <SelectItem value="low">Low — concise</SelectItem>
+                    <SelectItem value="medium">Medium</SelectItem>
+                    <SelectItem value="high">High — detailed</SelectItem>
+                  </SelectContent>
+                </Select>
+                {verbosityDisabled ? (
+                  <p className="text-xs text-muted-foreground">
+                    Fix the provider options JSON to change this setting.
+                  </p>
+                ) : null}
+              </div>
+            </SettingsRow>
+          ) : null}
 
           <PricingRow
             pricing={pricing}
